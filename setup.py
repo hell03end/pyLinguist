@@ -8,16 +8,14 @@ except ImportError:
 setup(
     name="pyYandexLinguistics",
     packages=packages,
-    version="0.1.2rc1",
+    version="0.1.3rc1",
     description="Yandex Linguistics APIs for Python 3.3+",
+    long_description="Yandex Linguistics APIs for Python 3.3+",
     author="hell03end",
     author_email="hell03end@outlook.com",
     url="https://github.com/hell03end/pyYandexLinguistics",
-    keywords=[
-        "translate", "dictionary", "predict", "predictor", "yandex",
-        "linguistics", "yandex-translate", "yandex-dictionary",
-        "yandex-predictor"
-    ],
+    keywords="translate dictionary predict predictor yandex linguistics "
+             "yandex-translate yandex-dictionary yandex-predictor",
     classifiers=[
         "Intended Audience :: Developers",
         "Development Status :: 4 - Beta",
