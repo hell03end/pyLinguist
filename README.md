@@ -1,10 +1,12 @@
 # pyYandexTranslate
 Library for Yandex Linguistics APIs for Python 3.3+
 
-include:
+Include:
 * Yandex Translate API
 * Yandex Dictionary API
 * Yandex Predictor API
+
+Powered by Yandex
 
 ### Installation
 `pip install pyYandexTranslate`
