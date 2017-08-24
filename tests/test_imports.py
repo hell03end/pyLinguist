@@ -1,6 +1,6 @@
 import unittest
 
-from pyYandexLinguistics import *  # to test absolute import
+from pyLinguist import *  # to test absolute import
 from .commons import assert_correct_import
 
 
@@ -13,22 +13,22 @@ class TestImports(unittest.TestCase):
 
     @assert_correct_import
     def test_from_init(self):
-        from pyYandexLinguistics import Translator
+        from pyLinguist import Translator
         assert Translator
-        from pyYandexLinguistics import Vocabulary
+        from pyLinguist import Vocabulary
         assert Vocabulary
-        from pyYandexLinguistics import Predictor
+        from pyLinguist import Predictor
         assert Predictor
-        from pyYandexLinguistics import YaTranslateException
+        from pyLinguist import YaTranslateException
         assert YaTranslateException
 
     @assert_correct_import
     def test_from_modules(self):
-        from pyYandexLinguistics import Translate
+        from pyLinguist import Translate
         assert Translate and Translate.Translator
-        from pyYandexLinguistics import Dictionary
+        from pyLinguist import Dictionary
         assert Dictionary and Dictionary.Dictionary
-        from pyYandexLinguistics import Prediction
+        from pyLinguist import Prediction
         assert Prediction and Prediction.Predictor
 
 

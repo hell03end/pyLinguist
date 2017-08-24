@@ -3,12 +3,12 @@ try:
     packages = find_packages(exclude=['tests'])
 except ImportError:
     from distutils.core import setup
-    packages = ["pyYandexLinguistics"]
+    packages = ["pyLinguist"]
 
 setup(
-    name="pyYandexLinguistics",
+    name="pyLinguist",
     packages=packages,
-    version="0.2.0",
+    version="0.1.0",
     description="Yandex Linguistics APIs for Python 3.3+",
     long_description="Yandex Linguistics APIs for Python 3.3+",
     author="hell03end",

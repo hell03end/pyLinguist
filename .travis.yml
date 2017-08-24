@@ -48,7 +48,7 @@ git:
 
   email:
     recipients:
-      - dmdesk1@gmail.com
+      - hell03end@outlook.com
     on_success: never
     on_failure: always
     on_start: never

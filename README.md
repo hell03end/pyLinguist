@@ -1,7 +1,7 @@
-# pyYandexTranslate
+# pyLinguist
 
 [![Build Status](https://travis-ci.org/hell03end/pyYandexLinguistics.svg?branch=master)](https://travis-ci.org/hell03end/pyYandexLinguistics)
-[![PyPI version](https://badge.fury.io/py/pyYandexLinguistics.svg)](https://badge.fury.io/py/pyYandexLinguistics)
+[![PyPI version](https://badge.fury.io/py/pyLinguist.svg)](https://badge.fury.io/py/pyLinguist)
 
 Library for Yandex Linguistics APIs for Python 3.3+
 
@@ -11,12 +11,12 @@ Include:
 * [Yandex Predictor API](https://tech.yandex.ru/predictor/)
 
 ### Installation
-`pip install pyYandexTranslate`
+`pip install pyLinguist`
 
 Or from sources:
 ```bash
 git clone https://github.com/hell03end/pyYandexLinguistics.git
-cd pyYandexLinguistics
+cd pyLinguist
 python3 tests/__init__.py  # to check all work correct
 ```
 
