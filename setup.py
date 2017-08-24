@@ -8,7 +8,7 @@ except ImportError:
 setup(
     name="pyYandexLinguistics",
     packages=packages,
-    version="0.1.3rc1",
+    version="0.2.0",
     description="Yandex Linguistics APIs for Python 3.3+",
     long_description="Yandex Linguistics APIs for Python 3.3+",
     author="hell03end",
@@ -22,6 +22,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.4",
@@ -30,6 +31,6 @@ setup(
     ],
     license="MIT License",
     platforms=["All"],
-    install_requires="requests>=2.9.1",
+    install_requires="requests>=2.2",
     python_requires=">=3.3"
 )
