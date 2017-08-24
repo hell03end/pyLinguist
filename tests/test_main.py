@@ -1,9 +1,7 @@
-# @TODO: test callbacks and proxies
-
 import os
 import unittest
 
-from pyYandexLinguistics import (
+from pyLinguist import (
     Translator, Vocabulary, Predictor, YaTranslateException
 )
 from .config import logger
