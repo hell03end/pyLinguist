@@ -1,0 +1,56 @@
+language: python
+python:
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+# installing additional dependencies
+# before_install:
+#   - sudo apt-get -qq -y update
+#   - sudo apt-get -qq -y install gcc
+
+# command to install dependencies
+install: "pip install -r requirements.txt"
+
+# command to run tests
+# script: pytest
+script: "python -m unittest tests"
+
+# blocklist
+branches:
+  except:
+  - /^develop/.*$/
+
+# safelist
+branches:
+  only:
+  - develop
+  - master
+
+# maybe this won't be useful
+# sudo: false
+
+# specify how much commits to store in travis
+git:
+  depth: 3
+
+# for telegram notifications
+# notifications:
+#   webhooks: False
+#     urls:
+#       - url
+#     on_success: change
+#     on_failure: always
+#     on_start: change
+#     on_cancel: always
+#     on_error: always
+
+  email:
+    recipients:
+      - dmdesk1@gmail.com
+    on_success: never
+    on_failure: always
+    on_start: never
+    on_cancel: change
+    on_error: always

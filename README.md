@@ -1,4 +1,8 @@
 # pyYandexTranslate
+
+[![Build Status](https://travis-ci.org/hell03end/pyYandexLinguistics.svg?branch=master)](https://travis-ci.org/hell03end/pyYandexLinguistics)
+[![PyPI version](https://badge.fury.io/py/pyYandexLinguistics.svg)](https://badge.fury.io/py/pyYandexLinguistics)
+
 Library for Yandex Linguistics APIs for Python 3.3+
 
 Include:
