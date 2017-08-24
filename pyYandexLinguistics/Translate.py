@@ -1,8 +1,4 @@
-try:
-    from . import YaTranslateException, _YaAPIHandler, logger
-except ImportError as err:
-    from pyYandexLinguistics import YaTranslateException, _YaAPIHandler, logger
-    logger.debug(err)
+from . import _YaAPIHandler
 
 
 class Translator(_YaAPIHandler):
