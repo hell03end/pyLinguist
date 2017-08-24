@@ -38,7 +38,6 @@ class Translator(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    # @TODO: caching
     def get_langs(self, lang: str='en', **params) -> dict:
         """
         Wrapper for getLangs API method. Use caching to store received info.
@@ -60,13 +59,13 @@ class Translator(_YaAPIHandler):
         return self.get_langs()['dirs']
 
     @property
-    def languages(self) -> dict:
+    def languages(self) -> dict or None:
         """
         Shortcut for get_langs(...)['langs'].
 
         :return: :type dict, dict of supported languages
         """
-        return self.get_langs()['langs']
+        return self.get_langs().get('langs', None)
 
     @property
     def ok(self) -> bool:
@@ -75,12 +74,7 @@ class Translator(_YaAPIHandler):
 
         :return: :type bool
         """
-        try:
-            __ = self.get_langs(update=True)
-        except BaseException as err:
-            logger.warning(err)
-            return False
-        return True
+        return super(Translator, self)._ok(self._url)
 
     def detect(self, text: str, hint: list=None, post: bool=False,
                **parameters) -> str:

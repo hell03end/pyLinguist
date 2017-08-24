@@ -166,33 +166,32 @@ class _YaAPIHandler:
             return response
         return response.json()
 
-    @property
-    def ok(self) -> bool:
+    def _ok(self, url: str, **params) -> bool:
         """
-        Implement it for testing api key is correct
+        To check that the API key is correct.
 
-        >>> _YaAPIHandler("123").ok
-        True
+        :return: :type bool
         """
         try:
-            # some simple request
-            return True
-        except:
+            __ = self._get_langs(url, update=True, **params)
+        except BaseException as err:
+            logger.warning(err)
             return False
+        return True
 
 
 try:
     from .Translate import Translator
-    from .Dictionary import Dictionary
+    from .Dictionary import Dictionary as Vocabulary
     from .Prediction import Predictor
 except ImportError as err:
     from pyYandexLinguistics.Translate import Translator
-    from pyYandexLinguistics.Dictionary import Dictionary
+    from pyYandexLinguistics.Dictionary import Dictionary as Vocabulary
     from pyYandexLinguistics.Prediction import Predictor
     logger.debug(err)
 
 
-__all__ = ["Dictionary", "Translator", "YaTranslateException", "Predictor"]
+__all__ = ["Vocabulary", "Translator", "YaTranslateException", "Predictor"]
 
 
 if __name__ == "__main__":

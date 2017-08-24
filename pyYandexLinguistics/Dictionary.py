@@ -63,12 +63,7 @@ class Dictionary(_YaAPIHandler):
 
         :return: :type bool
         """
-        try:
-            __ = self.get_langs(update=True)
-        except BaseException as err:
-            logger.warning(err)
-            return False
-        return True
+        return super(Dictionary, self)._ok(self._url)
 
     def lookup(self, text: str, lang: str, ui: str='en', flags: int=0,
                post: bool=False, **parameters) -> dict:
@@ -113,7 +108,6 @@ class Dictionary(_YaAPIHandler):
         del response['head']  # depreciated
         return response
 
-    # @TODO: add returned type annotation
     def definitions(self, text: str, lang: str, **params) -> list or None:
         """
         Shortcut for lookup(...)['def'].

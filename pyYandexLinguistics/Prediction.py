@@ -22,7 +22,7 @@ class Predictor(_YaAPIHandler):
         """
         :param api_key: :type str, personal API access key, given by Yandex
         :param xml: :type bool, specify returned data format
-        :param version: :tyoe str='1' – api version
+        :param version: :type str='1' – api version
 
         >>> Predictor("123")._api_key == "123"  # test for parent method
         True
@@ -37,7 +37,7 @@ class Predictor(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, update: bool=False, **params) -> list:
+    def get_langs(self, **params) -> list:
         """
         Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.ru/predictor/doc/dg/reference/getLangs-docpage/
@@ -55,12 +55,7 @@ class Predictor(_YaAPIHandler):
 
         :return: :type bool
         """
-        try:
-            __ = self.get_langs(update=True)
-        except BaseException as err:
-            logger.warning(err)
-            return False
-        return True
+        return super(Predictor, self)._ok(self._url)
 
     def complete(self, lang: str, q: str, limit: int=1, post: bool=False,
                  **parameters) -> dict:
