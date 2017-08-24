@@ -14,10 +14,10 @@ class Dictionary(_YaAPIHandler):
     """
     _base_url = r"https://dictionary.yandex.net/api/v{version}/" \
         r"dicservice{json}/"
-    _endpoints = {
-        'langs': "getLangs",
+    _endpoints = _YaAPIHandler._endpoints.copy()
+    _endpoints.update({
         'lookup': "lookup"
-    }
+    })
 
     # filters could be combined throw bitmap arithmetic
     NON_FILTERED = 0  # Remove all filters
@@ -46,20 +46,15 @@ class Dictionary(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, **parameters) -> list:
+    def get_langs(self, **params) -> list:
         """
-        Wrapper for getLangs API method.
+        Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.com/dictionary/doc/dg/reference/getLangs-docpage/
 
-        :param parameters: supported additional params: callback, proxies
+        :param params: supported additional params: callback, proxies
         :return: :type list, list of supported languages
         """
-        params = super(Dictionary, self)._form_params(**parameters)
-        return super(Dictionary, self)._make_request(
-            super(Dictionary, self)._make_url("langs"),
-            post=False,
-            **params
-        )
+        return super(Dictionary, self)._get_langs(self._url, **params)
 
     @property
     def ok(self) -> bool:
@@ -69,7 +64,7 @@ class Dictionary(_YaAPIHandler):
         :return: :type bool
         """
         try:
-            __ = self.get_langs()
+            __ = self.get_langs(update=True)
         except BaseException as err:
             logger.warning(err)
             return False

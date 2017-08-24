@@ -13,10 +13,10 @@ class Predictor(_YaAPIHandler):
         Underscoring is used for methods names instead of Camel Case
     """
     _base_url = r"https://predictor.yandex.net/api/v{version}/predict{json}/"
-    _endpoints = {
-        'langs': "getLangs",
+    _endpoints = _YaAPIHandler._endpoints.copy()
+    _endpoints.update({
         'complete': "complete"
-    }
+    })
 
     def __init__(self, api_key: str, xml: bool=False, version: str='1'):
         """
@@ -37,20 +37,16 @@ class Predictor(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, **parameters) -> list:
+    def get_langs(self, update: bool=False, **params) -> list:
         """
-        Wrapper for getLangs API method.
+        Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.ru/predictor/doc/dg/reference/getLangs-docpage/
 
-        :param parameters: supported additional params: callback, proxies
+        :param update: :type bool=False, update caching values
+        :param params: supported additional params: callback, proxies
         :return: :type list, list of supported languages
         """
-        params = super(Predictor, self)._form_params(**parameters)
-        return super(Predictor, self)._make_request(
-            super(Predictor, self)._make_url("langs"),
-            post=False,
-            **params
-        )
+        return super(Predictor, self)._get_langs(self._url, **params)
 
     @property
     def ok(self) -> bool:
@@ -60,7 +56,7 @@ class Predictor(_YaAPIHandler):
         :return: :type bool
         """
         try:
-            __ = self.get_langs()
+            __ = self.get_langs(update=True)
         except BaseException as err:
             logger.warning(err)
             return False

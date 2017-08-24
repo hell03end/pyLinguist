@@ -13,11 +13,11 @@ class Translator(_YaAPIHandler):
         Underscoring is used for methods names instead of Camel Case
     """
     _base_url = r"https://translate.yandex.net/api/v{version}/tr{json}/"
-    _endpoints = {
-        'langs': "getLangs",
+    _endpoints = _YaAPIHandler._endpoints.copy()
+    _endpoints.update({
         'detect': "detect",
         'translate': "translate"
-    }
+    })
 
     def __init__(self, api_key: str, xml: bool=False, version: str='1.5'):
         """
@@ -38,21 +38,17 @@ class Translator(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, lang: str='en', **parameters) -> dict:
+    # @TODO: caching
+    def get_langs(self, lang: str='en', **params) -> dict:
         """
-        Wrapper for getLangs API method.
+        Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.com/translate/doc/dg/reference/getLangs-docpage/
 
         :param lang: :type str='en', language names are output in the language corresponding to the code in this parameter
-        :param parameters: supported additional params: callback, proxies
+        :param params: supported additional params: callback, proxies, update
         :return: :type dict
         """
-        params = super(Translator, self)._form_params(ui=lang, **parameters)
-        return super(Translator, self)._make_request(
-            super(Translator, self)._make_url("langs"),
-            post=False,
-            **params
-        )
+        return super(Translator, self)._get_langs(self._url, ui=lang, **params)
 
     @property
     def directions(self) -> list:
@@ -80,7 +76,7 @@ class Translator(_YaAPIHandler):
         :return: :type bool
         """
         try:
-            __ = self.get_langs()
+            __ = self.get_langs(update=True)
         except BaseException as err:
             logger.warning(err)
             return False

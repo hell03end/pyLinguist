@@ -55,7 +55,9 @@ class _YaAPIHandler:
         Generic class for Yandex APIs
     """
     _base_url = r""  # base api url for all requests
-    _endpoints = {}
+    _endpoints = {
+        'langs': "getLangs"
+    }
 
     def __init__(self, api_key: str, xml: bool=False):
         """
@@ -81,9 +83,10 @@ class _YaAPIHandler:
             raise YaTranslateException(401)
         self._api_key = api_key
         self._json = ".json" if not xml else ""
+        self._cache = None
         self._url = self._base_url
 
-    def _make_url(self, endpoint: str) -> str:
+    def _make_url(self, endpoint: str, url: str=None) -> str:
         """
         Creates full (base url + endpoint) url for API requests.
 
@@ -92,8 +95,12 @@ class _YaAPIHandler:
 
         >>> not _YaAPIHandler("123")._make_url('')
         True
+        >>> _YaAPIHandler("123")._make_url('', "http://url.../") == "http://url.../"
+        True
         """
         # not format string for Python less then 3.6 compatibility
+        if url:
+            return url + self._endpoints.get(endpoint, '')
         return self._url + self._endpoints.get(endpoint, '')
 
     def _form_params(self, **params) -> dict:
@@ -119,6 +126,24 @@ class _YaAPIHandler:
         if 'callback' in parameters and not self._json:
             del parameters['callback']
         return parameters
+
+    def _get_langs(self, url: str, update=False, **parameters) -> dict or list:
+        """
+        Wrapper for all getLangs API methods.
+        Use caching to store received info.
+
+        :param update: :type bool=False, update caching values
+        :param parameters: supported additional params: callback, proxies, ui
+        :return: :type dict or list
+        """
+        if update or not self._cache:
+            params = self._form_params(**parameters)
+            self._cache = self._make_request(
+                self._make_url("langs", url),
+                post=False,
+                **params
+            )
+        return self._cache
 
     @staticmethod
     def _make_request(url: str, post: bool=False, **params) -> dict:
