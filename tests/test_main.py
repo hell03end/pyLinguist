@@ -2,7 +2,7 @@ import os
 import unittest
 
 from pyLinguist import (
-    Translator, Vocabulary, Predictor, YaTranslateException
+    Translator, Dictionary, Predictor, YaTranslateException
 )
 from .config import logger
 
@@ -65,11 +65,11 @@ class TestTranslator(unittest.TestCase):
         assert translation and 'detected' not in translation
 
 
-class TestVocabulary(unittest.TestCase):
+class TestDictionary(unittest.TestCase):
     def setUp(self):
         self.api_key = os.environ.get("API_KEY_YA_DICT")
         assert self.api_key
-        self.v = Vocabulary(self.api_key)
+        self.v = Dictionary(self.api_key)
         assert self.v.ok  # check api key is correct
 
     def test_get_langs(self):

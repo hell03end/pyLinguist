@@ -7,7 +7,7 @@ from .commons import assert_correct_import
 class TestImports(unittest.TestCase):
     @assert_correct_import
     def test_import_all(self):
-        assert "Translator" in globals() and "Vocabulary" in globals()
+        assert "Translator" in globals() and "Dictionary" in globals()
         assert "Predictor" in globals() and "YaTranslateException" in globals()
         assert "_YaAPIHandler" not in globals()
 
@@ -15,8 +15,8 @@ class TestImports(unittest.TestCase):
     def test_from_init(self):
         from pyLinguist import Translator
         assert Translator
-        from pyLinguist import Vocabulary
-        assert Vocabulary
+        from pyLinguist import Dictionary
+        assert Dictionary
         from pyLinguist import Predictor
         assert Predictor
         from pyLinguist import YaTranslateException
@@ -26,8 +26,8 @@ class TestImports(unittest.TestCase):
     def test_from_modules(self):
         from pyLinguist import Translate
         assert Translate and Translate.Translator
-        from pyLinguist import Dictionary
-        assert Dictionary and Dictionary.Dictionary
+        from pyLinguist import Vocabulary
+        assert Vocabulary and Vocabulary.Dictionary
         from pyLinguist import Prediction
         assert Prediction and Prediction.Predictor
 
