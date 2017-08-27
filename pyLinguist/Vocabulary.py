@@ -1,9 +1,9 @@
-from . import YaTranslateException, _YaAPIHandler
+from . import YaTranslateException, _YaAPIHandler, logger
 
 
 class Dictionary(_YaAPIHandler):
     """
-        Implements all Yandex Dictionary API methods
+        Implements Yandex Dictionary API methods
 
         for more info look on https://tech.yandex.com/dictionary/
         Underscoring is used for methods names instead of Camel Case
@@ -42,7 +42,7 @@ class Dictionary(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, **params) -> list:
+    def get_langs(self, **params) -> ...:
         """
         Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.com/dictionary/doc/dg/reference/getLangs-docpage/
@@ -62,7 +62,7 @@ class Dictionary(_YaAPIHandler):
         return super(Dictionary, self)._ok(self._url)
 
     def lookup(self, text: str, lang: str, ui: str='en', flags: int=0,
-               post: bool=False, **parameters) -> dict:
+               post: bool=False, **parameters) -> ...:
         """
         Wrapper for lookup API method.
         https://tech.yandex.com/dictionary/doc/dg/reference/lookup-docpage/
@@ -85,7 +85,8 @@ class Dictionary(_YaAPIHandler):
         :param flags: :type int=0, search options (bitmask of flags)
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type dict
+        :return: :type dict or xml.etree.ElementTree.ElementTree or requests.Response
+        :exception YaTranslateException, ConnectionError from requests.exceptions
         """
         if lang not in self.get_langs():
             raise YaTranslateException(501)
@@ -96,15 +97,14 @@ class Dictionary(_YaAPIHandler):
             flags=flags,
             **parameters
         )
-        response = super(Dictionary, self)._make_request(
-            super(Dictionary, self)._make_url("lookup"),
-            post,
-            **params
+        response = super(Dictionary, self).make_combined_request(
+            "lookup", post, **params
         )
-        del response['head']  # depreciated
+        if self._json:
+            del response['head']  # depreciated attribute
         return response
 
-    def definitions(self, text: str, lang: str, **params) -> list or None:
+    def definitions(self, text: str, lang: str, **params) -> ...:
         """
         Shortcut for lookup(...)['def'].
         Return array of dictionary entries.
@@ -113,8 +113,101 @@ class Dictionary(_YaAPIHandler):
         :param text: :type str, the word or phrase to find in the dictionary
         :param lang: :type str, translation direction (set as a pair of language codes separated by a hyphen)
         :param params: dict of additional params
+        :return list, None or NotImplemented
+        :exception YaTranslateException, ConnectionError from requests.exceptions, ValueError
+
+        >>> Dictionary("123", xml=True).definitions("hello", "en-en")
+        NotImplemented
+        >>> Dictionary("123").definitions("hello", "en-en", callback=abs)
+        Traceback (most recent call last):
+            ...
+        ValueError: definitions() Wrong usage of callback
         """
+        if "callback" in params:
+            raise ValueError("Wrong usage of callback")
+        elif not self._json:
+            return NotImplemented
         return self.lookup(text, lang, **params).get("def", None)
+
+
+class Speller(_YaAPIHandler):
+    """
+        Implements Yandex Speller API methods
+
+        for more info look on https://tech.yandex.ru/speller/
+        Underscoring is used for methods names instead of Camel Case
+        no SOAP interface available
+    """
+    _base_url = r"http://speller.yandex.net/services/spellservice{json}/"
+    _endpoints = {
+        'text': "checkText",
+        'texts': "checkTexts"
+    }
+
+    # options could be combined throw arithmetic (not bitmap!)
+    IGNORE_UPPERCASE = 1  # (e.g. "DOTA")
+    IGNORE_DIGITS = 2
+    IGNORE_URLS = 4
+    FIND_REPEAT_WORDS = 8  # (e.g. "What _is is_ going to be then?")
+    IGNORE_LATIN = 16
+    NO_SUGGEST = 32  # only check text without correction suggestions
+    FLAG_LATIN = 128
+    BY_WORDS = 256  # don't use context
+    IGNORE_CAPITALIZATION = 512  # ignore wrong capitalization (e.g. "aLeX")
+    IGNORE_ROMAN_NUMERALS = 2048
+
+    # error codes
+    ERROR_UNKNOWN_WORD = 1  # there is no such word in dictionary
+    ERROR_REPEAT_WORD = 2
+    ERROR_CAPITALIZATION = 3
+    ERROR_TOO_MANY_ERRORS = 4
+
+    def __init__(self, xml: bool=False, encoding: str='utf-8', **kwargs):
+        """
+        :param xml: :type bool, specify returned data format (json/xml)
+        :param encoding: :type str='utf-8', possible variants: 'utf-8', '1251'
+
+        >>> Speller()._api_key == '_'  # test for parent method
+        True
+        >>> Speller()._ie == "utf-8"
+        True
+        >>> Speller(encoding="1251")._ie == "1251"
+        True
+        >>> Speller(encoding="wubbalubbadubdub")
+        Traceback (most recent call last):
+            ...
+        ValueError: Wrong encoding: wubbalubbadubdub
+        """
+        super(Speller, self).__init__(kwargs.get('api_key', '_'), xml)
+        if encoding.lower() != "utf-8" and encoding.lower() != "1251":
+            raise ValueError("Wrong encoding: {}".format(encoding.lower()))
+        self._ie = encoding.lower()
+        self._url = self._base_url.format(json=self._json)
+
+    # @TODO: request to any of service apis
+    @property
+    def ok(self) -> bool:
+        """
+        No need to test api key.
+
+        :return: :type bool
+        """
+        try:
+            pass
+        except BaseException as err:
+            logger.warning(err)
+            return False
+        return True
+
+    def check_text(self, text: str, lang: str="ru,en", options: int=0,
+                   format: str="plain", post: bool=False,
+                   **parameters) -> list:
+        pass
+
+    def check_texts(self, text: list, lang: str="ru,en", options: int=0,
+                    format: str="plain", post: bool=False,
+                    **parameters) -> list:
+        pass
 
 
 if __name__ == "__main__":

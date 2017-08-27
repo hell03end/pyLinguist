@@ -25,4 +25,10 @@ def Predictor(*args, **kwargs):
     return Predictor(*args, **kwargs)
 
 
-__all__ = ["Dictionary", "Translator", "YaTranslateException", "Predictor"]
+def Speller(*args, **kwargs):
+    from .Vocabulary import Speller
+    return Speller(*args, **kwargs)
+
+
+__all__ = ["Dictionary", "Translator", "YaTranslateException",
+           "Predictor", "Speller"]

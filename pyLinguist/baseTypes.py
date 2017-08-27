@@ -1,4 +1,5 @@
 import requests
+from xml.etree import ElementTree
 
 from . import logger
 
@@ -82,15 +83,17 @@ class _YaAPIHandler:
         :param endpoint: :type str, one of the keys from self._endpoints dict
         :return: :type str, created url for requests
 
-        >>> not _YaAPIHandler("123")._make_url('')
-        True
+        >>> _YaAPIHandler("123")._make_url('')
+        Traceback (most recent call last):
+            ...
+        KeyError: ''
         >>> _YaAPIHandler("123")._make_url('', "http://url.../") == "http://url.../"
         True
         """
         # not format string for Python less then 3.6 compatibility
         if url:
-            return url + self._endpoints.get(endpoint, '')
-        return self._url + self._endpoints.get(endpoint, '')
+            return url + self._endpoints[endpoint]
+        return self._url + self._endpoints[endpoint]
 
     def _form_params(self, **params) -> dict:
         """
@@ -116,33 +119,80 @@ class _YaAPIHandler:
             del parameters['callback']
         return parameters
 
-    def _get_langs(self, url: str, update=False, **parameters) -> dict or list:
+    def _get_langs(self, url: str, update=False, **params) -> ...:
         """
         Wrapper for all getLangs API methods.
         Use caching to store received info.
 
         :param update: :type bool=False, update caching values
-        :param parameters: supported additional params: callback, proxies, ui
+        :param params: supported additional params: callback, proxies, ui
         :return: :type dict or list
         """
+        parameters = {
+            'post': False
+        }
+        parameters.update(**self._form_params(**params))
+        if "callback" in params:
+            return self._make_request(url=self._make_url("langs", url),
+                                      **parameters)
         if update or not self._cache:
-            params = self._form_params(**parameters)
-            self._cache = self._make_request(
-                self._make_url("langs", url),
-                post=False,
-                **params
-            )
+            response = self.make_combined_request(endpoint="langs",
+                                                  **parameters)
+            if self._json:
+                self._cache = response
+            elif response.find('dirs'):
+                self._cache = [direction.text for direction
+                               in response.find('dirs')]
+            else:
+                self._cache = [lang.text for lang in response]
         return self._cache
 
+    # @TODO: undone
     @staticmethod
-    def _make_request(url: str, post: bool=False, **params) -> dict:
+    def _make_request_xml(url: str, post: bool=False,
+                          **params) -> ElementTree.ElementTree():
+        """
+        Implements request to API with given params and return content in XML.
+
+        :param url: :type str, prepared url for request to API
+        :param post: :type bool, key for making POST request instead GET
+        :param params: additional params for request, transmitted throw 'params' argument
+        :return: :type xml.etree.ElementTree.ElementTree, response content in XML
+        :exception YaTranslateException, ConnectionError from requests.exceptions
+        """
+        try:
+            response = _YaAPIHandler._make_request(url, post, **params)
+        except YaTranslateException as err:
+            raise err
+        return ElementTree.fromstring(response.content)
+
+    @staticmethod
+    def _make_request_json(url: str, post: bool=False,
+                           **params) -> dict or list:
         """
         Implements request to API with given params and return content in JSON.
 
         :param url: :type str, prepared url for request to API
         :param post: :type bool, key for making POST request instead GET
         :param params: additional params for request, transmitted throw 'params' argument
-        :return: :type dict, response content in JSON (response.json())
+        :return: :type dict or list, response content in JSON (response.json())
+        :exception YaTranslateException, ConnectionError from requests.exceptions
+        """
+        try:
+            return _YaAPIHandler._make_request(url, post, **params).json()
+        except BaseException as err:
+            raise err
+
+    @staticmethod
+    def _make_request(url: str, post: bool=False,
+                      **params) -> requests.Response:
+        """
+        Implements request to API with given params.
+
+        :param url: :type str, prepared url for request to API
+        :param post: :type bool, key for making POST request instead GET
+        :param params: additional params for request, transmitted throw 'params' argument
+        :return: :type request.Response
         :exception YaTranslateException, ConnectionError from requests.exceptions
         """
         if post:
@@ -151,9 +201,29 @@ class _YaAPIHandler:
             response = requests.get(url, params=params)
         if not response.ok:
             raise YaTranslateException(response.status_code)
-        if 'callback' in params:
-            return response
-        return response.json()
+        return response
+
+    def make_combined_request(self, endpoint: str, post: bool=False,
+                              **params) -> ...:
+        """
+        Handle JSON, JSONB and XML requests to API with given params.
+
+        :param endpoint: :type str, one of the keys from self._endpoints dict
+        :param post: :type bool, key for making POST request instead GET
+        :param params: additional params for request, transmitted throw 'params' argument
+        :return: :type dict or list or request.Response or ElementTree
+        :exception YaTranslateException, ConnectionError from requests.exceptions
+        """
+        parameters = {
+            'url': self._make_url(endpoint),
+            'post': post
+        }
+        parameters.update(params)
+        if "callback" in params:
+            return self._make_request(**parameters)
+        elif not self._json:
+            return self._make_request_xml(**parameters)
+        return self._make_request_json(**parameters)
 
     def _ok(self, url: str, **params) -> bool:
         """
