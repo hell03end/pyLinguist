@@ -15,9 +15,9 @@ def Translator(*args, **kwargs):
     return Translator(*args, **kwargs)
 
 
-def Vocabulary(*args, **kwargs):
-    from .Dictionary import Dictionary as Vocabulary
-    return Vocabulary(*args, **kwargs)
+def Dictionary(*args, **kwargs):
+    from .Vocabulary import Dictionary
+    return Dictionary(*args, **kwargs)
 
 
 def Predictor(*args, **kwargs):
@@ -25,4 +25,10 @@ def Predictor(*args, **kwargs):
     return Predictor(*args, **kwargs)
 
 
-__all__ = ["Vocabulary", "Translator", "YaTranslateException", "Predictor"]
+def Speller(*args, **kwargs):
+    from .Vocabulary import Speller
+    return Speller(*args, **kwargs)
+
+
+__all__ = ["Dictionary", "Translator", "YaTranslateException",
+           "Predictor", "Speller"]

@@ -34,33 +34,37 @@ class Translator(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, lang: str='en', **params) -> dict:
+    def get_langs(self, lang: str='en', **params) -> ...:
         """
         Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.com/translate/doc/dg/reference/getLangs-docpage/
 
         :param lang: :type str='en', language names are output in the language corresponding to the code in this parameter
         :param params: supported additional params: callback, proxies, update
-        :return: :type dict
+        :return: :type dict or list or ElementTree or requests.Response
         """
         return super(Translator, self)._get_langs(self._url, ui=lang, **params)
 
     @property
-    def directions(self) -> list:
+    def directions(self) -> list or None:
         """
         Shortcut for get_langs(...)['dirs'].
 
-        :return: :type list, list of supported directions of translation
+        :return: :type list or NotImplemented, list of supported directions of translation
         """
-        return self.get_langs()['dirs']
+        if not self._json:
+            return self.get_langs()
+        return self.get_langs().get('dirs', None)
 
     @property
-    def languages(self) -> dict or None:
+    def languages(self) -> list or None or NotImplemented:
         """
         Shortcut for get_langs(...)['langs'].
 
-        :return: :type dict, dict of supported languages
+        :return: :type dict or None or NotImplemented, dict of supported languages
         """
+        if not self._json:
+            return NotImplemented
         return self.get_langs().get('langs', None)
 
     @property
@@ -73,7 +77,7 @@ class Translator(_YaAPIHandler):
         return super(Translator, self)._ok(self._url)
 
     def detect(self, text: str, hint: list=None, post: bool=False,
-               **parameters) -> str:
+               **parameters) -> ...:
         """
         Wrapper for detect API method.
         https://tech.yandex.com/translate/doc/dg/reference/detect-docpage/
@@ -82,7 +86,8 @@ class Translator(_YaAPIHandler):
         :param hint: :type list=None, list of the most likely languages (they will be given preference when detecting the text language)
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type str, code of detected language
+        :return: :type str or ElementTree or requests.Response
+        :exception ValueError
         """
         if hint and not isinstance(hint, list):
             raise ValueError("'hint' should be type <class: list>")
@@ -91,15 +96,16 @@ class Translator(_YaAPIHandler):
             hint=hint,
             **parameters
         )
-        return super(Translator, self)._make_request(
-            super(Translator, self)._make_url("detect"),
-            post,
-            **params
-        )['lang']
+        response = super(Translator, self).make_combined_request(
+            "detect", post, **params
+        )
+        if self._json:
+            return response['lang']
+        return response
 
     def translate(self, text: str or list, language: str,
                   formatting: str="plain", options: int=1, post: bool=False,
-                  **parameters) -> dict:
+                  **parameters) -> ...:
         """
         Wrapper for translate API method.
         https://tech.yandex.com/translate/doc/dg/reference/translate-docpage/
@@ -110,7 +116,7 @@ class Translator(_YaAPIHandler):
         :param options: :type int=1, the only option available at this time is whether the response should include the automatically detected language of the text being translated (options=1)
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type dict
+        :return: :type dict or xml.etree.ElementTree.ElementTree
         """
         params = super(Translator, self)._form_params(
             text=text,
@@ -119,12 +125,11 @@ class Translator(_YaAPIHandler):
             options=options,
             **parameters
         )
-        response = super(Translator, self)._make_request(
-            super(Translator, self)._make_url("translate"),
-            post,
-            **params
+        response = super(Translator, self).make_combined_request(
+            "translate", post, **params
         )
-        del response["code"]  # this information is redundant
+        if self._json:
+            del response['code']  # this information is redundant
         return response
 
 

@@ -33,7 +33,7 @@ class Predictor(_YaAPIHandler):
         self.v = version
         self._url = self._base_url.format(version=self.v, json=self._json)
 
-    def get_langs(self, **params) -> list:
+    def get_langs(self, **params) -> ...:
         """
         Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.ru/predictor/doc/dg/reference/getLangs-docpage/
@@ -54,7 +54,7 @@ class Predictor(_YaAPIHandler):
         return super(Predictor, self)._ok(self._url)
 
     def complete(self, lang: str, q: str, limit: int=1, post: bool=False,
-                 **parameters) -> dict:
+                 **parameters) -> ...:
         """
         Wrapper for complete API method.
         https://tech.yandex.ru/predictor/doc/dg/reference/complete-docpage/
@@ -64,7 +64,8 @@ class Predictor(_YaAPIHandler):
         :param limit: :type int=1, max number of returned strings
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type dict
+        :return: :type dict or ElementTree or requests.Response
+        :exception YaTranslateException
         """
         if lang not in self.get_langs():
             raise YaTranslateException(501)
@@ -74,10 +75,8 @@ class Predictor(_YaAPIHandler):
             limit=limit,
             **parameters
         )
-        return super(Predictor, self)._make_request(
-            super(Predictor, self)._make_url("complete"),
-            post,
-            **params
+        return super(Predictor, self).make_combined_request(
+            "complete", post, **params
         )
 
 
