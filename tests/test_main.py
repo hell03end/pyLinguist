@@ -11,7 +11,6 @@ from .config import logger
 from .commons import GenericTest
 
 
-# @TODO: undone
 class TestBaseTypes(GenericTest):
     def setUp(self):
         exception_happend = False
@@ -360,11 +359,31 @@ class TestSpeller(GenericTest):
         assert self.s_json.ok
         assert self.s_xml.ok
 
-    def test_check_text(self):
-        pass
+    def test__check_json(self):
+        assert self.assert_exception_happend(
+            self.s_json._check, ValueError, '', ''
+        )
+        assert self.s_json._check("text", '', post=True) is NotImplemented
+        assert self.assert_exception_happend(
+            self.s_json._check, YaTranslateException, "text", '', lang=["cpp"]
+        )
+        suggestion = self.s_json._check("text", "hella")
+        assert suggestion and isinstance(suggestion, list)
 
-    def test_check_texts(self):
-        pass
+    def test__check_xml(self):
+        assert self.assert_exception_happend(
+            self.s_xml._check, ValueError, '', ''
+        )
+        assert self.s_xml._check("text", '', post=True) is NotImplemented
+        assert self.assert_exception_happend(
+            self.s_xml._check, YaTranslateException, "text", '', lang=["cpp"]
+        )
+        suggestion = self.s_xml._check("text", "hella")
+        assert suggestion
+        assert isinstance(suggestion, ElementTree.Element)
+
+    def test__check_jsonb(self) -> NotImplemented:
+        return NotImplemented
 
 
 if __name__ == "__main__":

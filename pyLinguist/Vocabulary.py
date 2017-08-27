@@ -143,6 +143,8 @@ class Speller(_YaAPIHandler):
         'text': "checkText",
         'texts': "checkTexts"
     }
+    _languages = {'ru', 'en', 'ua'}
+    _encodings = {"utf-8", "1251"}
 
     # options could be combined throw arithmetic (not bitmap!)
     IGNORE_UPPERCASE = 1  # (e.g. "DOTA")
@@ -179,7 +181,7 @@ class Speller(_YaAPIHandler):
         ValueError: Wrong encoding: wubbalubbadubdub
         """
         super(Speller, self).__init__(kwargs.get('api_key', '_'), xml)
-        if encoding.lower() != "utf-8" and encoding.lower() != "1251":
+        if encoding.lower() not in self._encodings:
             raise ValueError("Wrong encoding: {}".format(encoding.lower()))
         self._ie = encoding.lower()
         self._url = self._base_url.format(json=self._json)
@@ -193,22 +195,116 @@ class Speller(_YaAPIHandler):
         :return: :type bool
         """
         try:
-            pass
+            __ = self.check_text("hello")
         except BaseException as err:
             logger.warning(err)
             return False
         return True
 
-    def check_text(self, text: str, lang: str="ru,en", options: int=0,
+    def _check(self, endpoint: str, text: str or list, lang: list=["ru", "en"],
+               options: int=0, fmt: str="plain", post: bool=False,
+               **parameters) -> ...:
+        """
+        Wrapper for getText and getTexts API methods.
+        https://tech.yandex.ru/speller/doc/dg/reference/checkText-docpage/
+        https://tech.yandex.ru/speller/doc/dg/reference/checkTexts-docpage/
+
+        Attributes:
+        error – info about error (or errors, each object is separate error)
+        word – original word
+        s – hint (could be None, one or many)
+        code – error code
+        pos – position of incorrect word
+        row – row of error
+        col – number or column with error
+        len – length of incorrect word
+
+        :param endpoint: :type str, method endpont
+        :param text: :type str or list, the word or phrase to check
+        :param lang: :type list, supported correction languages (possible values in Speller._languages)
+        :param options: :type int, configurations for speller checker (flags)
+        :param fmt: :type str, text format ('plain' or 'html')
+        :param post: :type bool=False, key for making POST request instead GET
+        :param parameters: supported additional params: callback, proxies
+        :return: :type list or xml.etree.ElementTree.ElementTree or requests.Response
+        :exception YaTranslateException, ValueError, ConnectionError from requests.exceptions
+        """
+        if endpoint not in self._endpoints:
+            raise ValueError("wrong endpoint {}".format(endpoint))
+        if post:
+            return NotImplemented
+        for lng in lang:
+            if lng not in self._languages:
+                raise YaTranslateException(501)
+        params = super(Speller, self)._form_params(
+            text=text,
+            lang=",".join(lang),
+            options=options,
+            format=fmt,
+            ie=self._ie,
+            **parameters
+        )
+        return super(Speller, self).make_combined_request(
+            endpoint, post=False, **params
+        )
+
+    def check_text(self, text: str, lang: list=["ru", "en"], options: int=0,
                    format: str="plain", post: bool=False,
-                   **parameters) -> list:
-        pass
+                   **parameters) -> ...:
+        """
+        Wrapper for getText API method.
+        https://tech.yandex.ru/speller/doc/dg/reference/checkText-docpage/
 
-    def check_texts(self, text: list, lang: str="ru,en", options: int=0,
+        :param text: :type str, the word or phrase to check
+        :param lang: :type list=['ru', 'en'], supported correction languages (possible values in Speller._languages)
+        :param options: :type int=0, configurations for speller checker (flags)
+        :param format: :type str="plain", text format ('plain' or 'html')
+        :param post: :type bool=False, key for making POST request instead GET
+        :param parameters: supported additional params: callback, proxies
+        :return: :type list or xml.etree.ElementTree.ElementTree or requests.Response
+        :exception YaTranslateException, ValueError, ConnectionError from requests.exceptions
+        """
+        try:
+            return self._check(
+                endpoint="text",
+                text=text,
+                lang=lang,
+                options=options,
+                fmt=format,
+                post=post,
+                **parameters
+            )
+        except BaseException as err:
+            raise err
+
+    def check_texts(self, text: list, lang: list=["ru", "en"], options: int=0,
                     format: str="plain", post: bool=False,
-                    **parameters) -> list:
-        pass
+                    **parameters) -> ...:
+        """
+        Wrapper for getTexts API method.
+        https://tech.yandex.ru/speller/doc/dg/reference/checkTexts-docpage/
 
+        :param text: :type list, the word or phrase to check
+        :param lang: :type list=['ru', 'en'], supported correction languages (possible values in Speller._languages)
+        :param options: :type int=0, configurations for speller checker (flags)
+        :param format: :type str="plain", text format ('plain' or 'html')
+        :param post: :type bool=False, key for making POST request instead GET
+        :param parameters: supported additional params: callback, proxies
+        :return: :type list or xml.etree.ElementTree.ElementTree or requests.Response
+        :exception YaTranslateException, ValueError, ConnectionError from requests.exceptions
+        """
+        try:
+            return self._check(
+                endpoint="texts",
+                text=text,
+                lang=lang,
+                options=options,
+                fmt=format,
+                post=post,
+                **parameters
+            )
+        except BaseException as err:
+            raise err
 
 if __name__ == "__main__":
     import doctest
