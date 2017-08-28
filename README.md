@@ -11,6 +11,8 @@ Include:
 * [Yandex Predictor API](https://tech.yandex.ru/predictor/)
 * [Yandex Speller API](https://tech.yandex.ru/speller/)
 
+### [Download](https://github.com/hell03end/pyLinguist/releases/download/0.1.2/pyLinguist-0.1.2.tar.gz)
+
 ### Installation
 `pip install pyLinguist`
 
