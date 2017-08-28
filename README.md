@@ -9,6 +9,7 @@ Include:
 * [Yandex Translate API](https://tech.yandex.com/translate/)
 * [Yandex Dictionary API](https://tech.yandex.com/dictionary/)
 * [Yandex Predictor API](https://tech.yandex.ru/predictor/)
+* [Yandex Speller API](https://tech.yandex.ru/speller/)
 
 ### Installation
 `pip install pyLinguist`
