@@ -8,7 +8,7 @@ except ImportError:
 setup(
     name="pyLinguist",
     packages=packages,
-    version="0.1.1b",
+    version="0.1.2",
     description="Yandex Linguistics APIs for Python 3.3+",
     long_description="Yandex Linguistics APIs for Python 3.3+",
     author="hell03end",
