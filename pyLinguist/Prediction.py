@@ -1,15 +1,14 @@
-from . import YaTranslateException, _YaAPIHandler
+from . import YaTranslateException, _YaBaseAPIHandler
 
 
-class Predictor(_YaAPIHandler):
+class Predictor(_YaBaseAPIHandler):
     """
         Implements all Yandex Predictor API methods
 
         for more info look on https://tech.yandex.ru/predictor/
-        Underscoring is used for methods names instead of Camel Case
     """
     _base_url = r"https://predictor.yandex.net/api/v{version}/predict{json}/"
-    _endpoints = _YaAPIHandler._endpoints.copy()
+    _endpoints = _YaBaseAPIHandler._endpoints.copy()
     _endpoints.update({
         'complete': "complete"
     })
@@ -18,6 +17,7 @@ class Predictor(_YaAPIHandler):
         """
         :param api_key: :type str, personal API access key, given by Yandex
         :param xml: :type bool, specify returned data format
+        :param version: :tyep str='1', version of the API
         :param version: :type str='1' – api version
 
         >>> Predictor("123")._api_key == "123"  # test for parent method
@@ -29,20 +29,21 @@ class Predictor(_YaAPIHandler):
         >>> Predictor("123")._url
         'https://predictor.yandex.net/api/v1/predict.json/'
         """
-        super(Predictor, self).__init__(api_key, xml)
-        self.v = version
-        self._url = self._base_url.format(version=self.v, json=self._json)
+        super(Predictor, self).__init__(api_key, xml, version)
+        self._url = self._base_url.format(version=self._v, json=self._json)
 
     def get_langs(self, **params) -> ...:
         """
         Wrapper for getLangs API method. Use caching to store received info.
         https://tech.yandex.ru/predictor/doc/dg/reference/getLangs-docpage/
 
-        :param update: :type bool=False, update caching values
-        :param params: supported additional params: callback, proxies
-        :return: :type list, list of supported languages
+        :param params: supported additional params: callback, proxies, update
+        :return: collection of supported languages
         """
         return super(Predictor, self)._get_langs(self._url, **params)
+
+    def getLangs(self, **params) -> ...:
+        return self.get_langs(**params)
 
     @property
     def ok(self) -> bool:
@@ -64,7 +65,7 @@ class Predictor(_YaAPIHandler):
         :param limit: :type int=1, max number of returned strings
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type dict or ElementTree or requests.Response
+        :return: :type dict or ElementTree.Element or requests.Response
         :exception YaTranslateException
         """
         if lang not in self.get_langs():

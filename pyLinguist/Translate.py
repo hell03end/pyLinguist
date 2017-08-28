@@ -1,15 +1,14 @@
-from . import _YaAPIHandler
+from . import _YaBaseAPIHandler
 
 
-class Translator(_YaAPIHandler):
+class Translator(_YaBaseAPIHandler):
     """
         Implements all Yandex Translator API methods
 
         for more info look on https://tech.yandex.com/translate/
-        Underscoring is used for methods names instead of Camel Case
     """
     _base_url = r"https://translate.yandex.net/api/v{version}/tr{json}/"
-    _endpoints = _YaAPIHandler._endpoints.copy()
+    _endpoints = _YaBaseAPIHandler._endpoints.copy()
     _endpoints.update({
         'detect': "detect",
         'translate': "translate"
@@ -19,6 +18,7 @@ class Translator(_YaAPIHandler):
         """
         :param api_key: :type str, personal API access key, given by Yandex
         :param xml: :type bool, specify returned data format
+        :param version: :tyep str='1.5', version of the API
         :param kwargs: :type str='1.5' – api version
 
         >>> Translator("123")._api_key == "123"  # test for parent method
@@ -30,9 +30,8 @@ class Translator(_YaAPIHandler):
         >>> Translator("123")._url
         'https://translate.yandex.net/api/v1.5/tr.json/'
         """
-        super(Translator, self).__init__(api_key, xml)
-        self.v = version
-        self._url = self._base_url.format(version=self.v, json=self._json)
+        super(Translator, self).__init__(api_key, xml, version)
+        self._url = self._base_url.format(version=self._v, json=self._json)
 
     def get_langs(self, lang: str='en', **params) -> ...:
         """
@@ -41,16 +40,19 @@ class Translator(_YaAPIHandler):
 
         :param lang: :type str='en', language names are output in the language corresponding to the code in this parameter
         :param params: supported additional params: callback, proxies, update
-        :return: :type dict or list or ElementTree or requests.Response
+        :return: :type dict or list or ElementTree.Element or requests.Response
         """
         return super(Translator, self)._get_langs(self._url, ui=lang, **params)
+
+    def getLangs(self, lang: str='en', **params) -> ...:
+        return self.get_langs(lang, **params)
 
     @property
     def directions(self) -> list or None:
         """
         Shortcut for get_langs(...)['dirs'].
 
-        :return: :type list or NotImplemented, list of supported directions of translation
+        :return: :type list or None, supported directions of translation
         """
         if not self._json:
             return self.get_langs()
@@ -61,7 +63,7 @@ class Translator(_YaAPIHandler):
         """
         Shortcut for get_langs(...)['langs'].
 
-        :return: :type dict or None or NotImplemented, dict of supported languages
+        :return: :type dict or None or NotImplemented, supported languages
         """
         if not self._json:
             return NotImplemented
@@ -86,11 +88,11 @@ class Translator(_YaAPIHandler):
         :param hint: :type list=None, list of the most likely languages (they will be given preference when detecting the text language)
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type str or ElementTree or requests.Response
+        :return: :type str or ElementTree.Element or requests.Response
         :exception ValueError
         """
         if hint and not isinstance(hint, list):
-            raise ValueError("'hint' should be type <class: list>")
+            raise ValueError("'hint' should be type {}".format(type(list)))
         params = super(Translator, self)._form_params(
             text=text,
             hint=hint,
@@ -116,7 +118,7 @@ class Translator(_YaAPIHandler):
         :param options: :type int=1, the only option available at this time is whether the response should include the automatically detected language of the text being translated (options=1)
         :param post: :type bool=False, key for making POST request instead GET
         :param parameters: supported additional params: callback, proxies
-        :return: :type dict or xml.etree.ElementTree.ElementTree
+        :return: :type dict or ElementTree.Element or requests.Response
         """
         params = super(Translator, self)._form_params(
             text=text,
