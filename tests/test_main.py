@@ -5,41 +5,44 @@ from xml.etree import ElementTree
 
 from pyLinguist import (
     Translator, Dictionary, Predictor, Speller, YaTranslateException,
-    _YaAPIHandler
+    _YaBaseAPIHandler, logger
 )
-from .config import logger
 from .commons import GenericTest
 
 
 class TestBaseTypes(GenericTest):
     def setUp(self):
-        exception_happend = False
-        try:
-            __ = _YaAPIHandler(None)
-        except YaTranslateException as err:
-            logger.debug(err)
-            exception_happend = True
-        assert exception_happend
+        assert self.assert_exception_happend(
+            _YaBaseAPIHandler, YaTranslateException, None
+        )
         self.api_key = "123"
-        self.h_json = _YaAPIHandler(self.api_key)
+        self.h_json = _YaBaseAPIHandler(self.api_key)
         assert self.h_json
-        self.h_xml = _YaAPIHandler(self.api_key, xml=True)
+        self.h_xml = _YaBaseAPIHandler(self.api_key, xml=True)
         assert self.h_xml
 
     def test_attrib_json(self):
         assert self.h_json._api_key
         assert self.h_json._json
-        assert not self.h_json._cache
+        assert not self.h_json._cache_langs
         assert not self.h_json._url
+        assert not self.h_json._v
+        assert self.h_json.v is NotImplemented
+        self.h_json._v = '1'
+        assert self.h_json.v == '1'
 
     def test_attrib_xml(self):
         assert self.h_xml._api_key
         assert not self.h_xml._json
-        assert not self.h_xml._cache
+        assert not self.h_xml._cache_langs
         assert not self.h_xml._url
+        assert not self.h_xml._v
+        assert self.h_xml.v is NotImplemented
+        self.h_xml._v = '1'
+        assert self.h_xml.v == '1'
 
     def test__make_url(self):
-        # equivalent for h_xml
+        # same for h_xml
         base_url = "http://google.com/"
         url = self.h_json._make_url("langs")
         assert url
@@ -92,25 +95,25 @@ class TestTranslator(GenericTest):
         langs = self.t_json.get_langs()
         assert langs and isinstance(langs, dict)
         assert 'dirs' in langs
-        assert self.t_json._cache
-        self.t_json._cache = None
+        assert self.t_json._cache_langs
+        self.t_json._cache_langs = None
         langs = self.t_json.get_langs()
-        assert langs and self.t_json._cache
+        assert langs and self.t_json._cache_langs
 
     def test_get_langs_xml(self):
         langs = self.t_xml.get_langs()
         assert langs and isinstance(langs, list)
-        assert self.t_xml._cache
-        self.t_xml._cache = None
+        assert self.t_xml._cache_langs
+        self.t_xml._cache_langs = None
         langs = self.t_xml.get_langs()
-        assert langs and self.t_xml._cache
+        assert langs and self.t_xml._cache_langs
 
     def test_get_langs_jsonb(self) -> NotImplemented:
         return NotImplemented
-        # self.t_json._cache = None
+        # self.t_json._cache_langs = None
         # response = self.t_json.get_langs(callback=self.generic_callback)
         # assert response and isinstance(response, requests.Response)
-        # assert not self.t_json._cache
+        # assert not self.t_json._cache_langs
         # assert self._callback_called
         # self._callback_called = False
 
@@ -199,25 +202,25 @@ class TestDictionary(GenericTest):
     def test_get_langs_json(self):
         langs = self.v_json.get_langs()
         assert langs and isinstance(langs, list)
-        assert self.v_json._cache
-        self.v_json._cache = None
+        assert self.v_json._cache_langs
+        self.v_json._cache_langs = None
         langs = self.v_json.get_langs()
-        assert langs and self.v_json._cache
+        assert langs and self.v_json._cache_langs
 
     def test_get_langs_xml(self):
         langs = self.v_xml.get_langs()
         assert langs and isinstance(langs, list)
-        assert self.v_xml._cache
-        self.v_xml._cache = None
+        assert self.v_xml._cache_langs
+        self.v_xml._cache_langs = None
         langs = self.v_xml.get_langs()
-        assert langs and self.v_xml._cache
+        assert langs and self.v_xml._cache_langs
 
     def test_get_langs_jsonb(self) -> NotImplemented:
         return NotImplemented
-        # self.v_json._cache = None
+        # self.v_json._cache_langs = None
         # response = self.v_json.get_langs(callback=self.generic_callback)
         # assert response and isinstance(response, requests.Response)
-        # assert not self.v_json._cache
+        # assert not self.v_json._cache_langs
         # assert self._callback_called
         # self._callback_called = False
 
@@ -284,25 +287,25 @@ class TestPredictor(GenericTest):
     def test_get_langs_json(self):
         langs = self.p_json.get_langs()
         assert langs and isinstance(langs, list)
-        assert self.p_json._cache
-        self.p_json._cache = None
+        assert self.p_json._cache_langs
+        self.p_json._cache_langs = None
         langs = self.p_json.get_langs()
-        assert langs and self.p_json._cache
+        assert langs and self.p_json._cache_langs
 
     def test_get_langs_xml(self):
         langs = self.p_xml.get_langs()
         assert langs and isinstance(langs, list)
-        assert self.p_xml._cache
-        self.p_xml._cache = None
+        assert self.p_xml._cache_langs
+        self.p_xml._cache_langs = None
         langs = self.p_xml.get_langs()
-        assert langs and self.p_xml._cache
+        assert langs and self.p_xml._cache_langs
 
     def test_get_langs_jsonb(self) -> NotImplemented:
         return NotImplemented
-        # self.p_json._cache = None
+        # self.p_json._cache_langs = None
         # response = self.p_json.get_langs(callback=self.generic_callback)
         # assert response and isinstance(response, requests.Response)
-        # assert not self.p_json._cache
+        # assert not self.p_json._cache_langs
         # assert self._callback_called
         # self._callback_called = False
 
@@ -324,13 +327,9 @@ class TestPredictor(GenericTest):
         assert 'text' in prediction and len(prediction['text']) == 5
 
     def test_complete_xml(self):
-        exception_happend = False
-        try:
-            __ = self.p_xml.complete('cpp', "#includ")
-        except YaTranslateException as err:
-            logger.debug(err)
-            exception_happend = True
-        assert exception_happend
+        assert self.assert_exception_happend(
+            self.p_xml.complete, YaTranslateException, 'cpp', "#include"
+        )
         prediction = self.p_xml.complete('en', "hello")
         assert prediction
         assert isinstance(prediction, ElementTree.Element)
@@ -354,6 +353,12 @@ class TestSpeller(GenericTest):
         assert self.s_json and self.s_json.ok
         self.s_xml = Speller(xml=True)
         assert self.s_xml and self.s_xml.ok
+
+    def test_get_langs(self):
+        langs = self.s_json.get_langs()
+        assert langs and isinstance(langs, set)
+        langs = self.s_xml.get_langs()
+        assert langs and isinstance(langs, set)
 
     def test_ok(self):
         assert self.s_json.ok
