@@ -1,56 +1,60 @@
+os: linux
+dist: trusty
+sudo: false
 language: python
 python:
   - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
-
-# installing additional dependencies
-# before_install:
-#   - sudo apt-get -qq -y update
-#   - sudo apt-get -qq -y install gcc
-
-# command to install dependencies
-install: "pip install -r requirements.txt"
-
-# command to run tests
-# script: pytest
-script: "python -m unittest -v tests"
+  - "3.6-dev"
+  - "nightly"
+cache:
+  pip: true  # caches $HOME/.cache/pip
+# before_cache: {action}
 
 # blocklist
-branches:
-  except:
-  - /^develop/.*$/
+# branches:
+#   except:
+#   - /^develop/.*$/
 
 # safelist
 branches:
   only:
   - develop
   - master
+  # - /^v\d+\.\d+(\.\d+)?(-\S*)?$/ # v1.0
 
-# maybe this won't be useful
-# sudo: false
-
-# specify how much commits to store in travis
 git:
-  depth: 3
+  depth: 3 # specify how much commits to store in travis
+  # submodules: false
 
-# for telegram notifications
-# notifications:
-#   webhooks: False
-#     urls:
-#       - url
-#     on_success: change
-#     on_failure: always
-#     on_start: change
-#     on_cancel: always
-#     on_error: always
-
+notifications:
   email:
     recipients:
       - hell03end@outlook.com
     on_success: never
     on_failure: always
     on_start: never
-    on_cancel: change
-    on_error: always
+
+env:
+matrix:
+  allow_failures:
+  - python: "3.3"
+
+# before_install: {action}
+install:
+  - pip install -r requirements.txt
+# after_install: {action}
+
+# before_script: {action}
+script:
+  - python -m unittest -v tests
+# after_success: {action}
+# after_failure: {action}
+# before_deploy: {action}
+# deploy:
+#   skip_cleanup: true
+# after_deploy:
+#   - git stash --all # remove all changes
+# after_script: {action}
