@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hell03end/pyLinguist.svg?branch=master)](https://travis-ci.org/hell03end/pyLinguist)
 [![PyPI version](https://badge.fury.io/py/pyLinguist.svg)](https://badge.fury.io/py/pyLinguist)
+[![Dependency Status](https://gemnasium.com/badges/github.com/hell03end/pyLinguist.svg)](https://gemnasium.com/github.com/hell03end/pyLinguist)
 
 Library for Yandex Linguistics APIs for Python 3.3+
 
