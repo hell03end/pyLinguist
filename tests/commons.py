@@ -24,7 +24,7 @@ class GenericTest(unittest.TestCase):
 
 
 def assert_correct_import(import_func: Callable) -> Callable:
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs) -> None:
         exceptions_happend = False
         try:
             import_func(*args, **kwargs)
