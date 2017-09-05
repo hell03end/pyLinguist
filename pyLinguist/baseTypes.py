@@ -1,7 +1,8 @@
+import http
+import json
 from collections import Callable
+from urllib import parse, request
 from xml.etree import ElementTree
-
-import requests
 
 from .config import logger
 
@@ -121,7 +122,11 @@ class _YaBaseAPIHandler:
         >>> 'callback' not in _YaBaseAPIHandler("123", xml=True)._form_params(abs)
         True
         """
-        parameters = {param: params[param] for param in params}
+        for key in params:
+            if isinstance(params[key], list):
+                params[key] = ",".join(params[key])
+        parameters = {key: params[key] for key in params
+                      if params[key] is not None}
         parameters['key'] = self._api_key
         # for JSONB response
         if 'callback' in parameters and not self._json:
@@ -168,7 +173,7 @@ class _YaBaseAPIHandler:
         :exception YaTranslateException, requests.exceptions.ConnectionError
         """
         response = _YaBaseAPIHandler._make_request(url, post, **params)
-        return ElementTree.fromstring(response.content)
+        return ElementTree.fromstring(response.read().decode('utf-8'))
 
     @staticmethod
     def _make_request_json(url: str, post: bool=False,
@@ -183,11 +188,11 @@ class _YaBaseAPIHandler:
         :exception YaTranslateException, requests.exceptions.ConnectionError
         """
         response = _YaBaseAPIHandler._make_request(url, post, **params)
-        return response.json()
+        return json.loads(response.read().decode('utf-8'))
 
     @staticmethod
     def _make_request(url: str, post: bool=False,
-                      **params) -> requests.Response:
+                      **params) -> http.client.HTTPResponse:
         """
         Implements request to API with given params.
 
@@ -197,12 +202,14 @@ class _YaBaseAPIHandler:
         :return: :type request.Response
         :exception YaTranslateException, requests.exceptions.ConnectionError
         """
-        if post:
-            response = requests.post(url, params=params)
+        url_params = parse.urlencode(params)
+        if not post:
+            full_url = "{}?{}".format(url, url_params)
+            response = request.urlopen(full_url)
         else:
-            response = requests.get(url, params=params)
-        if not response.ok:
-            raise YaTranslateException(response.status_code)
+            response = request.urlopen(url, data=url_params.encode('utf-8'))
+        if response.code != 200:
+            raise YaTranslateException(response.code)
         return response
 
     def make_combined_request(self, endpoint: str, post: bool=False,
@@ -242,7 +249,7 @@ class _YaBaseAPIHandler:
                 __ = func(*args, **params)
             else:
                 __ = self._get_langs(url, update=True, *args, **params)
-        except requests.RequestException as err:
+        except http.client.HTTPException as err:
             logger.warning(err)
             return False
         except YaTranslateException as err:
