@@ -6,42 +6,52 @@ from .commons import assert_correct_import
 
 class TestImports(unittest.TestCase):
     def test_import_all(self):
-        assert "Translator" in globals()
-        assert "Dictionary" in globals()
-        assert "Predictor" in globals()
-        assert "Speller" in globals()
-        assert "YaTranslateException" in globals()
-        assert "_YaAPIHandler" not in globals()
+        self.assertIn("Translator", globals())
+        self.assertIn("Dictionary", globals())
+        self.assertIn("Predictor", globals())
+        self.assertIn("Speller", globals())
+        self.assertIn("YaTranslateException", globals())
+        self.assertNotIn("_YaAPIHandler", globals())
 
     @assert_correct_import
     def test_direct_import(self):
         import pyLinguist
-        assert pyLinguist and "pyLinguist" in locals()
+        self.assertTrue(pyLinguist)
+        self.assertIn("pyLinguist", locals())
 
     @assert_correct_import
     def test_from_init(self):
         from pyLinguist import Translator
-        assert Translator and "Translator" in locals()
+        self.assertTrue(Translator)
+        self.assertIn("Translator", locals())
         from pyLinguist import Dictionary
-        assert Dictionary and "Dictionary" in locals()
+        self.assertTrue(Dictionary)
+        self.assertIn("Dictionary", locals())
         from pyLinguist import Predictor
-        assert Predictor and "Predictor" in locals()
+        self.assertTrue(Predictor)
+        self.assertIn("Predictor", locals())
         from pyLinguist import Speller
-        assert Speller and "Speller" in locals()
+        self.assertTrue(Speller)
+        self.assertIn("Speller", locals())
         from pyLinguist import YaTranslateException
-        assert YaTranslateException and "YaTranslateException" in locals()
+        self.assertTrue(YaTranslateException)
+        self.assertIn("YaTranslateException", locals())
 
     @assert_correct_import
     def test_from_modules(self):
         from pyLinguist import Translate
-        assert Translate and "Translate" in locals()
-        assert Translate.Translator
+        self.assertTrue(Translate)
+        self.assertIn("Translate", locals())
+        self.assertTrue(Translate.Translator)
         from pyLinguist import Vocabulary
-        assert Vocabulary and "Vocabulary" in locals()
-        assert Vocabulary.Dictionary and Vocabulary.Speller
+        self.assertTrue(Vocabulary)
+        self.assertIn("Vocabulary", locals())
+        self.assertTrue(Vocabulary.Dictionary)
+        self.assertTrue(Vocabulary.Speller)
         from pyLinguist import Prediction
-        assert Prediction and "Prediction" in locals()
-        assert Prediction.Predictor
+        self.assertTrue(Prediction)
+        self.assertIn("Prediction", locals())
+        self.assertTrue(Prediction.Predictor)
 
 
 if __name__ == "__main__":
