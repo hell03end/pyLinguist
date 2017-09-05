@@ -1,6 +1,6 @@
 import http
 import json
-from collections import Callable
+from collections import Callable, Collection
 from urllib import parse, request
 from xml.etree import ElementTree
 
@@ -57,10 +57,10 @@ class _YaBaseAPIHandler:
             return "{}{}".format(url, self._endpoints[endpoint])
         return "{}{}".format(self._url, self._endpoints[endpoint])
 
-    def _form_params(self, **params) -> dict:
+    def _form_params(self, list_exceptions: Collection={}, **params) -> dict:
         """Returns dict of params for request, including API key and etc."""
         for key in params:
-            if isinstance(params[key], list):
+            if isinstance(params[key], list) and key not in list_exceptions:
                 params[key] = ",".join(params[key])
         parameters = {key: params[key] for key in params
                       if params[key] is not None}
@@ -103,7 +103,7 @@ class _YaBaseAPIHandler:
 
     @staticmethod
     def _make_request_json(url: str, post: bool=False,
-                           **params) -> dict or list:
+                           **params) -> Collection:
         """
         Implements request to API with given params and return content in JSON.
         """

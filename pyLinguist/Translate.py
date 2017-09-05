@@ -1,3 +1,6 @@
+import re
+
+from . import logger
 from . import _YaBaseAPIHandler
 
 
@@ -70,6 +73,49 @@ class Translator(_YaBaseAPIHandler):
             return response['lang']
         return response
 
+    # @TODO: 2..10Kb for GET
+    def _translate_long_get(self, text: str) -> ...:
+        return NotImplemented
+
+    # @TODO: 10K symbols for POST
+    def _translate_long_post(self, text: str) -> ...:
+        return NotImplemented
+
+    # @TODO: add semantic separation
+    @staticmethod
+    def _separate_text(text: str, limit: int) -> list:
+        size = len(text)
+        parts_count = int((size + limit - 1) // limit)
+        return [text[part:part + limit] for part in range(0, size, limit)]
+
+    # @TODO: add list separation by contained text
+    @staticmethod
+    def _separate_texts(texts: list, limit: int) -> list:
+        separated_list = [[]]
+        partion_size = 0
+        idx = 0
+        for text in texts:
+            if len(text) <= limit - partion_size:
+                separated_list[idx].append(text)
+                continue
+            text_parts = Translator._separate_text(text, limit - partion_size)
+            separated_list[idx].append((text_parts[0]))
+            separated_list.append([])
+            idx += 1
+            separated_list[idx].append(("".join(text_parts[1:])))
+            separated_list.append([])
+            idx += 1
+        return NotImplemented
+
+    # @FIXME: some cases of parsing are incorrect
+    @staticmethod
+    def _str2list(text: str) -> str:
+        if not isinstance(text, str):
+            raise ValueError("Wrong type {}".format(type(text)))
+        if "\\" in text:
+            return re.split(r"\', \'", text.strip(r"[]").strip("\'"))
+        return re.split("\', \'", text.strip(r"[]").strip("\'"))
+
     def translate(self, text: str or list, language: str,
                   formatting: str="plain", options: int=1, post: bool=False,
                   **parameters) -> ...:
@@ -80,14 +126,25 @@ class Translator(_YaBaseAPIHandler):
         """
         params = super(Translator, self)._form_params(
             text=text,
+            list_exceptions={"text"},
             lang=language,
             format=formatting,
             options=options,
-            **parameters
+            ** parameters
         )
+        # assume that unicode character is 2 bytes long and browser can handle
+        # long GET requests (up to approximately 9Kb)
+        if not post and isinstance(text, str) and len(text) >= (9 * 1024) / 2:
+            logger.warning("Long text processing still not implemented!")
+            ...
+        elif post and isinstance(text, str) and len(text) >= 10000:
+            logger.warning("Long text processing still not implemented!")
+            ...
         response = super(Translator, self).make_combined_request(
             "translate", post, **params
         )
         if self._json:
             del response['code']  # this information is redundant
+            if isinstance(text, list) and len(response['text']) == 1:
+                response['text'] = self._str2list(response['text'][0])
         return response

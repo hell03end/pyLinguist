@@ -187,6 +187,16 @@ class TestTranslator(GenericTest):
         translation = self.t_json.translate("hello", 'en-de', options=0)
         self.assertTrue(translation)
         self.assertNotIn('detected', translation)
+        translation = self.t_json.translate(["hello", "world", "cat"], 'de')
+        self.assertTrue(translation)
+        self.assertIn('text', translation)
+        self.assertIsInstance(translation['text'], list)
+        self.assertTrue(len(translation['text']) == 3)
+        translation = self.t_json.translate(['hello, "abs"', 'cat'], 'de')
+        self.assertTrue(translation)
+        self.assertIn('text', translation)
+        self.assertIsInstance(translation['text'], list)
+        self.assertTrue(len(translation['text']) == 2)
 
     def test_translate_xml(self):
         translation = self.t_xml.translate("hello, world", 'de', options=1)
