@@ -9,7 +9,7 @@ except ImportError:
 setup(
     name="pyLinguist",
     packages=packages,
-    version="0.1.2",
+    version="0.1.3rc1",
     description="Yandex Linguistics APIs for Python 3.3+",
     long_description="Yandex Linguistics APIs for Python 3.3+",
     author="hell03end",
@@ -33,6 +33,5 @@ setup(
     ],
     license="MIT License",
     platforms=["All"],
-    install_requires="requests>=2.2",
     python_requires=">=3.3"
 )
