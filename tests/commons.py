@@ -12,16 +12,6 @@ class GenericTest(unittest.TestCase):
     def generic_callback(self, *args, **kwargs) -> None:
         self._callback_called = True
 
-    @staticmethod
-    def assert_exception_happend(func: Callable, exception: Exception, *args,
-                                 **kwargs) -> bool:
-        try:
-            func(*args, **kwargs)
-            return False
-        except exception as err:
-            logger.debug(err)
-            return True
-
 
 def assert_correct_import(import_func: Callable) -> Callable:
     def wrapper(*args, **kwargs) -> None:

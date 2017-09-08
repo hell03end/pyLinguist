@@ -1,10 +1,10 @@
 import unittest
 
 from pyLinguist import *  # to test absolute import
-from .commons import assert_correct_import
+from .commons import assert_correct_import, GenericTest
 
 
-class TestImports(unittest.TestCase):
+class TestImports(GenericTest):
     def test_import_all(self):
         self.assertIn("Translator", globals())
         self.assertIn("Dictionary", globals())
