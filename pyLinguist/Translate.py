@@ -146,5 +146,6 @@ class Translator(_YaBaseAPIHandler):
         if self._json:
             del response['code']  # this information is redundant
             if isinstance(text, list) and len(response['text']) == 1:
-                response['text'] = self._str2list(response['text'][0])
+                logger.warning("List parsing still not implemented!")
+                # response['text'] = self._str2list(response['text'][0])
         return response
