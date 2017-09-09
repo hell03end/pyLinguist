@@ -1,17 +1,17 @@
 import re
 
 from . import logger
-from . import _YaBaseAPIHandler
+from . import YaBaseAPIHandler
 
 
-class Translator(_YaBaseAPIHandler):
+class Translator(YaBaseAPIHandler):
     """
         Implements all Yandex Translator API methods
 
         for more info look on https://tech.yandex.com/translate/
     """
     _base_url = r"https://translate.yandex.net/api/v{version}/tr{json}/"
-    _endpoints = _YaBaseAPIHandler._endpoints.copy()
+    _endpoints = YaBaseAPIHandler._endpoints.copy()
     _endpoints.update({
         'detect': "detect",
         'translate': "translate"

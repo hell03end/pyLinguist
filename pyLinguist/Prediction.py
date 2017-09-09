@@ -1,14 +1,14 @@
-from . import YaTranslateException, _YaBaseAPIHandler
+from . import YaTranslateException, YaBaseAPIHandler
 
 
-class Predictor(_YaBaseAPIHandler):
+class Predictor(YaBaseAPIHandler):
     """
         Implements all Yandex Predictor API methods
 
         for more info look on https://tech.yandex.ru/predictor/
     """
     _base_url = r"https://predictor.yandex.net/api/v{version}/predict{json}/"
-    _endpoints = _YaBaseAPIHandler._endpoints.copy()
+    _endpoints = YaBaseAPIHandler._endpoints.copy()
     _endpoints.update({
         'complete': "complete"
     })

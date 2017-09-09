@@ -1,7 +1,7 @@
-from . import YaTranslateException, _YaBaseAPIHandler, logger
+from . import YaTranslateException, YaBaseAPIHandler, logger
 
 
-class Dictionary(_YaBaseAPIHandler):
+class Dictionary(YaBaseAPIHandler):
     """
         Implements Yandex Dictionary API methods
 
@@ -9,7 +9,7 @@ class Dictionary(_YaBaseAPIHandler):
     """
     _base_url = r"https://dictionary.yandex.net/api/v{version}/" \
                 r"dicservice{json}/"
-    _endpoints = _YaBaseAPIHandler._endpoints.copy()
+    _endpoints = YaBaseAPIHandler._endpoints.copy()
     _endpoints.update({
         'lookup': "lookup"
     })
@@ -92,7 +92,7 @@ class Dictionary(_YaBaseAPIHandler):
         return self.lookup(text, lang, **params).get("def", None)
 
 
-class Speller(_YaBaseAPIHandler):
+class Speller(YaBaseAPIHandler):
     """
         Implements Yandex Speller API methods
 
