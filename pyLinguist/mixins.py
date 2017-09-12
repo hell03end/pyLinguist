@@ -3,9 +3,23 @@ import json
 from collections import Callable, Collection
 from urllib import parse, request
 from xml.etree import ElementTree
+from time import time
 
-from .config import logger
 from .exc import YaTranslateException
+
+
+class LoggerMixin(object):
+    def __init__(self, *args, **kwargs):
+        from .config import Logger
+        params = {}
+        level = kwargs.pop("level", None)
+        if level:
+            params['level'] = level
+        fmt = kwargs.pop("format", None)
+        if fmt:
+            params['format'] = fmt
+        self._logger = Logger(str(self.__class__), **params)
+        super(LoggerMixin, self).__init__(*args, **kwargs)
 
 
 class YaBaseMeta(type):
@@ -34,21 +48,28 @@ class YaBaseMeta(type):
         return self
 
 
-class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {})):
+class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {}), LoggerMixin):
     """Generic class for Yandex APIs"""
     _base_url = r""  # base api url for all requests
     _endpoints = {
         'langs': "getLangs"
     }
 
-    def __init__(self, api_key: str, xml: bool=False, version: str=None):
+    def __init__(self, api_key: str, xml: bool=False, version: str=None,
+                 **kwargs):
         if not api_key:
             raise YaTranslateException(401)
-        self._api_key = api_key
+        self._api_key = {
+            'key': api_key,
+            'correct': False,
+            'timestamp': time() - 60 * 60 * 24,
+            'threshold': kwargs.pop("threshold", 60 * 60 * 24)  # 24 hours
+        }
         self._json = ".json" if not xml else ""
         self._cache_langs = None
         self._v = version
         self._url = self._base_url
+        super(YaBaseAPIHandler, self).__init__(**kwargs)
 
     @property
     def v(self) -> str or NotImplemented:
@@ -71,7 +92,7 @@ class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {})):
                 params[key] = ",".join(params[key])
         parameters = {key: params[key] for key in params
                       if params[key] is not None}
-        parameters['key'] = self._api_key
+        parameters['key'] = self._api_key['key']
         # for JSONB response
         if 'callback' in parameters and not self._json:
             del parameters['callback']
@@ -147,17 +168,21 @@ class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {})):
 
     def _ok(self, url: str=None, func: Callable=None, *args, **params) -> bool:
         """To check that the API key is correct."""
+        force_update = time() - \
+            self._api_key['timestamp'] < self._api_key['threshold']
+        if self._api_key['correct'] and not force_update:
+            return True
         try:
             if func:
                 __ = func(*args, **params)
             else:
                 __ = self._get_langs(url, update=True, *args, **params)
-        except http.client.HTTPException as err:
-            logger.warning(err)
+        except (YaTranslateException, http.client.HTTPException) as err:
+            self._logger.warning(err)
+            self._api_key['correct'] = False
             return False
-        except YaTranslateException as err:
-            logger.warning(err)
-            return False
+        self._api_key['timestamp'] = time()
+        self._api_key['correct'] = True
         return True
 
 

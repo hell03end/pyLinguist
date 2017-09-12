@@ -1,7 +1,9 @@
 from collections import Callable
 import unittest
 
-from .config import logger
+from .config import Logger
+
+logger = Logger(__name__)
 
 
 class GenericTest(unittest.TestCase):

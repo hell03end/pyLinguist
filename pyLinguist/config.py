@@ -1,6 +1,18 @@
-import logging
+LEVELS = {
+    "DEBUG": 10,
+    "INFO": 20,
+    "WARNING": 30,
+    "ERROR": 40,
+}
 
 
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - "
-                           "%(message)s", level=logging.INFO)
-logger = logging.getLogger(__name__)
+def Logger(name: str, level: int=LEVELS["DEBUG"], **kwargs) -> ...:
+    import logging
+    logging.basicConfig(
+        format=kwargs.get(
+            "format",
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        ),
+        level=level
+    )
+    return logging.getLogger(name)

@@ -1,6 +1,5 @@
 import re
 
-from . import logger
 from . import YaBaseAPIHandler
 
 
@@ -135,10 +134,10 @@ class Translator(YaBaseAPIHandler):
         # assume that unicode character is 2 bytes long and browser can handle
         # long GET requests (up to approximately 9Kb)
         if not post and isinstance(text, str) and len(text) >= (9 * 1024) / 2:
-            logger.warning("Long text processing still not implemented!")
+            self._logger.warning("Long text processing still not implemented!")
             ...
         elif post and isinstance(text, str) and len(text) >= 10000:
-            logger.warning("Long text processing still not implemented!")
+            self._logger.warning("Long text processing still not implemented!")
             ...
         response = super(Translator, self).make_combined_request(
             "translate", post, **params
@@ -146,6 +145,6 @@ class Translator(YaBaseAPIHandler):
         if self._json:
             del response['code']  # this information is redundant
             if isinstance(text, list) and len(response['text']) == 1:
-                logger.warning("List parsing still not implemented!")
+                self._logger.warning("List parsing still not implemented!")
                 # response['text'] = self._str2list(response['text'][0])
         return response

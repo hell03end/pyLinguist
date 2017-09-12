@@ -1,4 +1,4 @@
-from . import YaTranslateException, YaBaseAPIHandler, logger
+from . import YaTranslateException, YaBaseAPIHandler
 
 
 class Dictionary(YaBaseAPIHandler):
@@ -170,9 +170,8 @@ class Speller(YaBaseAPIHandler):
             raise ValueError("wrong endpoint {}".format(endpoint))
         if post:
             return NotImplemented
-        for lng in lang:
-            if lng not in self.get_langs():
-                raise YaTranslateException(501)
+        if list(filter((lambda l: l not in self.get_langs()), lang)):
+            raise YaTranslateException(501)
         params = super(Speller, self)._form_params(
             text=text,
             lang=",".join(lang),

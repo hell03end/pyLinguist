@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 
 from pyLinguist import (
     Translator, Dictionary, Predictor, Speller, YaTranslateException,
-    YaBaseAPIHandler, logger
+    YaBaseAPIHandler
 )
 from .commons import GenericTest
 
