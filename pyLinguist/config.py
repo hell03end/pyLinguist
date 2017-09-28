@@ -1,8 +1,12 @@
 LEVELS = {
+    "NOTSET": 0,
     "DEBUG": 10,
     "INFO": 20,
+    "WARN": 30,
     "WARNING": 30,
     "ERROR": 40,
+    "FATAL": 50,
+    "CRITICAL": 50
 }
 
 
