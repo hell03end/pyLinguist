@@ -10,7 +10,7 @@ from .exc import YaTranslateException
 
 class LoggerMixin(object):
     def __init__(self, *args, **kwargs):
-        from .config import Logger
+        from .utils import Logger
         params = {}
         level = kwargs.pop("level", None)
         if level:

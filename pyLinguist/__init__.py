@@ -11,7 +11,7 @@
 
 from .mixins import YaBaseAPIHandler
 from .exc import YaTranslateException
-from .config import Logger
+from .utils import Logger
 
 
 def Translator(api_key: str, xml: bool=False, version: str='1.5'):
