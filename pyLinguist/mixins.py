@@ -72,7 +72,7 @@ class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {}), LoggerMixin):
         super(YaBaseAPIHandler, self).__init__(**kwargs)
 
     @property
-    def v(self) -> str or NotImplemented:
+    def v(self) -> (str, NotImplemented):
         """API version"""
         if self._v:
             return self._v
@@ -169,7 +169,7 @@ class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {}), LoggerMixin):
     def _ok(self, url: str=None, func: Callable=None, *args, **params) -> bool:
         """To check that the API key is correct."""
         force_update = time() - \
-            self._api_key['timestamp'] < self._api_key['threshold']
+            self._api_key['timestamp'] > self._api_key['threshold']
         if self._api_key['correct'] and not force_update:
             return True
         try:
