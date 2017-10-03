@@ -1,7 +1,3 @@
-from collections import Callable
-from threading import Thread
-
-
 LEVELS = {
     "NOTSET": 0,
     "DEBUG": 10,
@@ -36,11 +32,3 @@ def Logger(name: str, level: int=LEVELS["DEBUG"], **kwargs) -> ...:
         level=level
     )
     return logging.getLogger(name)
-
-
-def async_run(f: Callable) -> Callable:
-    '''Run functions in separate threads'''
-    def wrapper(*args, **kwargs) -> None:
-        thread = Thread(target=f, args=args, kwargs=kwargs)
-        thread.start()
-    return wrapper
