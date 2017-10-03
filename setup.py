@@ -9,7 +9,7 @@ except ImportError:
 setup(
     name="pyLinguist",
     packages=packages,
-    version="0.1.3rc1",
+    version="0.1.3",
     description="Yandex Linguistics APIs for Python 3.3+",
     long_description="Yandex Linguistics APIs for Python 3.3+",
     author="hell03end",
@@ -20,7 +20,7 @@ setup(
              "spelling grammar yandex-speller",
     classifiers=[
         "Intended Audience :: Developers",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Stable",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",

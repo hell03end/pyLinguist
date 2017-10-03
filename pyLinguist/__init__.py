@@ -1,11 +1,17 @@
 """
-    This module implements some Yandex Linguistics APIs for Python 3.3+
+    Implements Yandex Linguistics APIs for Python 3.3+
 
+    Include:
+        * Translate API
+        * Dictionary API
+        * Speller API
+        * Predictor API
     Powered by Yandex (https://tech.yandex.com)
 """
 
-from .baseTypes import YaTranslateException, _YaBaseAPIHandler
-from .config import logger
+from .mixins import YaBaseAPIHandler
+from .exc import YaTranslateException
+from .utils import Logger
 
 
 def Translator(api_key: str, xml: bool=False, version: str='1.5'):

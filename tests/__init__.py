@@ -1,5 +1,5 @@
-import unittest
-
-
-if __name__ == "__main__":
-    unittest.main()
+from pyLinguist.utils import Logger
+from pyLinguist import (
+    Translator, Dictionary, Predictor, Speller, YaTranslateException,
+    YaBaseAPIHandler
+)
