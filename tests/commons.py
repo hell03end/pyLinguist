@@ -1,19 +1,8 @@
 from collections import Callable
-import unittest
 
 from . import Logger
 
 logger = Logger(__name__)
-
-
-class GenericTest(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        self._callback_called = False
-        self._logger = Logger(self.__class__)
-        super(GenericTest, self).__init__(*args, **kwargs)
-
-    def generic_callback(self, *args, **kwargs) -> None:
-        self._callback_called = True
 
 
 def assert_correct_import(import_func: Callable) -> Callable:
