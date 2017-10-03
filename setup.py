@@ -20,7 +20,7 @@ setup(
              "spelling grammar yandex-speller",
     classifiers=[
         "Intended Audience :: Developers",
-        "Development Status :: 5 - Stable",
+        "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
