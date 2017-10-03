@@ -1,7 +1,7 @@
 from collections import Callable
 import unittest
 
-from .utils import Logger
+from . import Logger
 
 logger = Logger(__name__)
 
