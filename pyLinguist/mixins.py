@@ -1,9 +1,9 @@
 import http
 import json
 from collections import Callable, Collection
+from time import time
 from urllib import parse, request
 from xml.etree import ElementTree
-from time import time
 
 from .exc import YaTranslateException
 
@@ -22,10 +22,10 @@ class LoggerMixin(object):
         super(LoggerMixin, self).__init__(*args, **kwargs)
 
 
-class YaBaseMeta(type):
+class _BaseMeta(type):
     def __new__(meta_class, name: str, bases: Collection, class_dict: dict):
         # normal class constructor
-        new_class = super(YaBaseMeta, meta_class).__new__(
+        new_class = super(_BaseMeta, meta_class).__new__(
             meta_class, name, bases, class_dict
         )
         # recursively inherit docstrings
@@ -44,11 +44,15 @@ class YaBaseMeta(type):
     def __call__(cls, *args, **kwargs):
         # check YaBaseAPIHandler is somewhere in mro
         assert issubclass(cls, YaBaseAPIHandler)
-        self = super(YaBaseMeta, cls).__call__(*args, **kwargs)
+        self = super(_BaseMeta, cls).__call__(*args, **kwargs)
         return self
 
 
-class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {}), LoggerMixin):
+class BaseMeta(_BaseMeta("BaseMeta", (object, ), {})):
+    pass
+
+
+class YaBaseAPIHandler(BaseMeta, LoggerMixin):
     """Generic class for Yandex APIs"""
     _base_url = r""  # base api url for all requests
     _endpoints = {
@@ -186,4 +190,4 @@ class YaBaseAPIHandler(YaBaseMeta("YaBaseAPIHandler", (), {}), LoggerMixin):
         return True
 
 
-__all__ = ["YaTranslateException"]
+__all__ = ["YaBaseAPIHandler", "BaseMeta", "LoggerMixin"]
