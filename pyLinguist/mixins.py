@@ -1,6 +1,6 @@
 import http
 import json
-from collections import Callable, Collection
+from collections import Callable, Container
 from time import time
 from urllib import parse, request
 from xml.etree import ElementTree
@@ -23,7 +23,7 @@ class LoggerMixin(object):
 
 
 class _BaseMeta(type):
-    def __new__(meta_class, name: str, bases: Collection, class_dict: dict):
+    def __new__(meta_class, name: str, bases: Container, class_dict: dict):
         # normal class constructor
         new_class = super(_BaseMeta, meta_class).__new__(
             meta_class, name, bases, class_dict
@@ -89,7 +89,7 @@ class YaBaseAPIHandler(BaseMeta, LoggerMixin):
             return "{}{}".format(url, self._endpoints[endpoint])
         return "{}{}".format(self._url, self._endpoints[endpoint])
 
-    def _form_params(self, list_exceptions: Collection={}, **params) -> dict:
+    def _form_params(self, list_exceptions: Container={}, **params) -> dict:
         """Returns dict of params for request, including API key and etc."""
         for key in params:
             if isinstance(params[key], list) and key not in list_exceptions:
@@ -135,7 +135,7 @@ class YaBaseAPIHandler(BaseMeta, LoggerMixin):
 
     @staticmethod
     def _make_request_json(url: str, post: bool=False,
-                           **params) -> Collection:
+                           **params) -> Container:
         """
         Implements request to API with given params and return content in JSON.
         """
