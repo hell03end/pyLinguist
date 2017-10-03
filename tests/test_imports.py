@@ -5,6 +5,9 @@ from .commons import assert_correct_import, GenericTest
 
 
 class TestImports(GenericTest):
+    def __init__(self, *args, **kwargs):
+        super(TestImports, self).__init__(*args, **kwargs)
+
     def test_import_all(self):
         self.assertIn("Translator", globals())
         self.assertIn("Dictionary", globals())

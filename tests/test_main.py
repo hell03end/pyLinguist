@@ -11,6 +11,9 @@ from .commons import GenericTest
 
 
 class TestBaseTypes(GenericTest):
+    def __init__(self, *args, **kwargs):
+        super(TestBaseTypes, self).__init__(*args, **kwargs)
+
     def setUp(self):
         with self.assertRaises(YaTranslateException):
             __ = YaBaseAPIHandler(None)
@@ -88,6 +91,9 @@ class TestBaseTypes(GenericTest):
 
 
 class TestTranslator(GenericTest):
+    def __init__(self, *args, **kwargs):
+        super(TestTranslator, self).__init__(*args, **kwargs)
+
     def setUp(self):
         self.api_key = os.environ.get("API_KEY_YA_TRANSLATE")
         self.assertTrue(self.api_key)
@@ -208,6 +214,9 @@ class TestTranslator(GenericTest):
 
 
 class TestDictionary(GenericTest):
+    def __init__(self, *args, **kwargs):
+        super(TestDictionary, self).__init__(*args, **kwargs)
+
     def setUp(self):
         self.api_key = os.environ.get("API_KEY_YA_DICT")
         self.assertTrue(self.api_key)
@@ -280,6 +289,9 @@ class TestDictionary(GenericTest):
 
 
 class TestPredictor(GenericTest):
+    def __init__(self, *args, **kwargs):
+        super(TestPredictor, self).__init__(*args, **kwargs)
+
     def setUp(self):
         self.api_key = os.environ.get("API_KEY_YA_PREDICTOR")
         self.assertTrue(self.api_key)
@@ -346,6 +358,9 @@ class TestPredictor(GenericTest):
 
 
 class TestSpeller(GenericTest):
+    def __init__(self, *args, **kwargs):
+        super(TestSpeller, self).__init__(*args, **kwargs)
+
     def setUp(self):
         self.s_json = Speller()
         self.assertTrue(self.s_json)
