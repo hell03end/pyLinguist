@@ -49,7 +49,7 @@ install:
 
 # before_script: {action}
 script:
-  - python -m unittest -v tests
+  - pytest -v
 # after_success: {action}
 # after_failure: {action}
 # before_deploy: {action}
