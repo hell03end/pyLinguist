@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL 
+# Byte-compiled / optimized / DLL
 __pycache__/
 *.py[cod]
 *$py.class
@@ -15,6 +15,7 @@ __pycache__/
 *glyphicons*
 
 ### Specific PATHs:
+setup.py
 .idea/
 bak/
 rsc/
