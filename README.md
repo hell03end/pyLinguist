@@ -26,21 +26,6 @@ python3 tests/__init__.py  # to check all work correct
 
 ### [Examples](https://github.com/hell03end/pyLinguist/wiki/Examples)
 
-### Changelog
-* 0.1.3:
-    * add docstrings inheritance
-    * add api key status cache for `.ok()` method
-    * add logger
-    * internal refactoring
-    * move from unittest for pytest
-
-* 0.1.3rc1:
-    * remove requests from dependencies
-    * use native unittest assert methods
-    * TODO: change comments and documentation
-
-* 0.1.2:
-    * add Speller for grammar check
-    * change Vocabulary class to Dictionary as is in Yandex API
+### [Changelog](https://github.com/hell03end/pyLinguist/wiki/Changelog)
 
 Powered by Yandex
