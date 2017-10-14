@@ -1,12 +1,20 @@
 """
+    pyLinguist
+    ==========
+
     Implements Yandex Linguistics APIs for Python 3.3+
 
-    Include:
-        * Translate API
-        * Dictionary API
-        * Speller API
-        * Predictor API
-    Powered by Yandex (https://tech.yandex.com)
+    Include: Translate API, Dictionary API, Speller API, Predictor API.
+    Powered by Yandex (https://tech.yandex.com).
+
+    Usage
+    -----
+    from pyLinguist import Translator
+    import os
+    t = Translator(os.environ.get("KEY_FOR_TRANSLATOR_API"))
+    assert t.ok  # check api key is correct
+    t.translate("Hello", 'es')  # get simple translation
+    # {'lang': 'en-es', 'detected': {'lang': 'en'}, 'text': ['Hola']}
 """
 
 from .mixins import YaBaseAPIHandler
@@ -36,3 +44,5 @@ def Speller(xml: bool=False, encoding: str='utf-8', **kwargs):
 
 __all__ = ["Dictionary", "Translator", "YaTranslateException",
            "Predictor", "Speller"]
+__author__ = "Dmitry Pchelkin"
+__version__ = (0, 1, 3)
