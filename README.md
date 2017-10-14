@@ -12,8 +12,6 @@ Include:
 * [Yandex Predictor API](https://tech.yandex.ru/predictor/)
 * [Yandex Speller API](https://tech.yandex.ru/speller/)
 
-### [Download](https://github.com/hell03end/pyLinguist/releases/download/0.1.2/pyLinguist-0.1.2.tar.gz)
-
 ### Installation
 `pip install pyLinguist`
 
@@ -21,7 +19,7 @@ Or from sources:
 ```bash
 git clone https://github.com/hell03end/pyLinguist.git
 cd pyLinguist
-python3 tests/__init__.py  # to check all work correct
+python3 tests/__init__.py  # to check all works correct
 ```
 
 ### [Examples](https://github.com/hell03end/pyLinguist/wiki/Examples)
