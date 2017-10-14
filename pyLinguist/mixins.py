@@ -48,8 +48,11 @@ class _BaseMeta(type):
         return self
 
 
-class BaseMeta(_BaseMeta("BaseMeta", (object, ), {})):
-    pass
+class BaseMeta(_BaseMeta("_BaseMeta", (object, ), {})):
+    ''' Base metaclass which implements annotation inheritance '''
+
+    def __init__(self, *args, **kwargs):
+        super(BaseMeta, self).__init__()
 
 
 class YaBaseAPIHandler(BaseMeta, LoggerMixin):
