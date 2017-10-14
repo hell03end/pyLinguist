@@ -12,8 +12,6 @@ Include:
 * [Yandex Predictor API](https://tech.yandex.ru/predictor/)
 * [Yandex Speller API](https://tech.yandex.ru/speller/)
 
-### [Download](https://github.com/hell03end/pyLinguist/releases/download/0.1.2/pyLinguist-0.1.2.tar.gz)
-
 ### Installation
 `pip install pyLinguist`
 
@@ -21,19 +19,11 @@ Or from sources:
 ```bash
 git clone https://github.com/hell03end/pyLinguist.git
 cd pyLinguist
-python3 tests/__init__.py  # to check all work correct
+python3 tests/__init__.py  # to check all works correct
 ```
 
 ### [Examples](https://github.com/hell03end/pyLinguist/wiki/Examples)
 
-### Changelog
-* 0.1.3rc1:
-    * remove requests from dependencies
-    * use native unittest assert methods
-    * TODO: change comments and documentation
-
-* 0.1.2:
-    * add Speller for grammar check
-    * change Vocabulary class to Dictionary as is in Yandex API
+### [Changelog](https://github.com/hell03end/pyLinguist/wiki/Changelog)
 
 Powered by Yandex
