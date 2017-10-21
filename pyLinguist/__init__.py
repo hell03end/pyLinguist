@@ -17,9 +17,7 @@
     # {'lang': 'en-es', 'detected': {'lang': 'en'}, 'text': ['Hola']}
 """
 
-from pyLinguist.mixins import YaBaseAPIHandler
 from pyLinguist.exc import YaTranslateException
-from pyLinguist.utils import Logger
 
 
 def Translator(api_key: str, xml: bool=False, version: str='1.5'):
@@ -42,7 +40,5 @@ def Speller(xml: bool=False, encoding: str='utf-8', **kwargs):
     return Speller(xml=xml, encoding=encoding, **kwargs)
 
 
-__all__ = ["Dictionary", "Translator", "YaTranslateException",
-           "Predictor", "Speller"]
 __author__ = "Dmitry Pchelkin"
 __version__ = (0, 1, 3)

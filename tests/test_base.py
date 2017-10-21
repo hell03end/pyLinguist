@@ -1,6 +1,7 @@
 import pytest
 
-from pyLinguist import YaBaseAPIHandler, YaTranslateException
+from pyLinguist import YaTranslateException
+from pyLinguist.mixins import YaBaseAPIHandler
 
 
 class TestBaseTypes:
