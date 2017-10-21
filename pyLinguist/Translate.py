@@ -1,6 +1,6 @@
 import re
 
-from . import YaBaseAPIHandler
+from pyLinguist.mixins import YaBaseAPIHandler
 
 
 class Translator(YaBaseAPIHandler):

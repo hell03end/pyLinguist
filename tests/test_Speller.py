@@ -2,7 +2,7 @@ from xml.etree import ElementTree
 
 import pytest
 
-from . import Speller, YaTranslateException
+from pyLinguist import Speller, YaTranslateException
 
 
 class TestSpeller:

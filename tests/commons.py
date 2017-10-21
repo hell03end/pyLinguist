@@ -1,6 +1,6 @@
 from collections import Callable
 
-from . import Logger
+from pyLinguist.utils import Logger
 
 logger = Logger(__name__)
 

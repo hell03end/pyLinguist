@@ -1,4 +1,4 @@
-from .utils import ERROR_CODES
+from pyLinguist.utils import ERROR_CODES
 
 
 class YaTranslateException(Exception):

@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 
 import pytest
 
-from . import Translator, YaTranslateException
+from pyLinguist import Translator, YaTranslateException
 
 
 class TestTranslator:

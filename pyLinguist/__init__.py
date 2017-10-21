@@ -17,28 +17,28 @@
     # {'lang': 'en-es', 'detected': {'lang': 'en'}, 'text': ['Hola']}
 """
 
-from .mixins import YaBaseAPIHandler
-from .exc import YaTranslateException
-from .utils import Logger
+from pyLinguist.mixins import YaBaseAPIHandler
+from pyLinguist.exc import YaTranslateException
+from pyLinguist.utils import Logger
 
 
 def Translator(api_key: str, xml: bool=False, version: str='1.5'):
-    from .Translate import Translator
+    from pyLinguist.Translate import Translator
     return Translator(api_key=api_key, xml=xml, version=version)
 
 
 def Dictionary(api_key: str, xml: bool=False, version: str='1'):
-    from .Vocabulary import Dictionary
+    from pyLinguist.Vocabulary import Dictionary
     return Dictionary(api_key=api_key, xml=xml, version=version)
 
 
 def Predictor(api_key: str, xml: bool=False, version: str='1'):
-    from .Prediction import Predictor
+    from pyLinguist.Prediction import Predictor
     return Predictor(api_key=api_key, xml=xml, version=version)
 
 
 def Speller(xml: bool=False, encoding: str='utf-8', **kwargs):
-    from .Vocabulary import Speller
+    from pyLinguist.Vocabulary import Speller
     return Speller(xml=xml, encoding=encoding, **kwargs)
 
 

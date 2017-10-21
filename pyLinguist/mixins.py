@@ -5,7 +5,7 @@ from time import time
 from urllib import parse, request
 from xml.etree import ElementTree
 
-from .exc import YaTranslateException
+from pyLinguist.exc import YaTranslateException
 
 
 class LoggerMixin(object):

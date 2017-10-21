@@ -1,6 +1,6 @@
 import pytest
 
-from . import YaBaseAPIHandler, YaTranslateException
+from pyLinguist import YaBaseAPIHandler, YaTranslateException
 
 
 class TestBaseTypes:

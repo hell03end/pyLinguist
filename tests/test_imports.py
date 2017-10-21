@@ -1,5 +1,5 @@
 from pyLinguist import *  # to test absolute import
-from .commons import assert_correct_import
+from tests.commons import assert_correct_import
 
 
 class TestImports:

@@ -1,4 +1,4 @@
-from . import YaTranslateException, YaBaseAPIHandler
+from pyLinguist.mixins import YaTranslateException, YaBaseAPIHandler
 
 
 class Predictor(YaBaseAPIHandler):
