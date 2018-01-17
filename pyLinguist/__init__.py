@@ -17,27 +17,36 @@
     # {'lang': 'en-es', 'detected': {'lang': 'en'}, 'text': ['Hola']}
 """
 
+import logging
+
 from pyLinguist.exc import YaTranslateException
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d]"
+           " %(message)s",
+    datefmt="%H:%M:%S"
+)
 
-def Translator(api_key: str, xml: bool=False, version: str='1.5'):
+
+def Translator(api_key: str, version: str='1.5', **kwargs):
     from pyLinguist.Translate import Translator
-    return Translator(api_key=api_key, xml=xml, version=version)
+    return Translator(api_key=api_key, version=version, **kwargs)
 
 
-def Dictionary(api_key: str, xml: bool=False, version: str='1'):
+def Dictionary(api_key: str, version: str='1', **kwargs):
     from pyLinguist.Vocabulary import Dictionary
-    return Dictionary(api_key=api_key, xml=xml, version=version)
+    return Dictionary(api_key=api_key, version=version, **kwargs)
 
 
-def Predictor(api_key: str, xml: bool=False, version: str='1'):
+def Predictor(api_key: str, version: str='1', **kwargs):
     from pyLinguist.Prediction import Predictor
-    return Predictor(api_key=api_key, xml=xml, version=version)
+    return Predictor(api_key=api_key, version=version, **kwargs)
 
 
-def Speller(xml: bool=False, encoding: str='utf-8', **kwargs):
+def Speller(encoding: str='utf-8', **kwargs):
     from pyLinguist.Vocabulary import Speller
-    return Speller(xml=xml, encoding=encoding, **kwargs)
+    return Speller(encoding=encoding, **kwargs)
 
 
 __author__ = "Dmitry Pchelkin"
