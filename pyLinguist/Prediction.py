@@ -28,12 +28,10 @@ class Predictor(YaBaseAPIHandler):
 
     def getLangs(self) -> list:
         return self.get_langs()
-    getLangs.__doc__ = get_langs.__doc__
 
     @property
     def ok(self) -> bool:
         return super(Predictor, self)._ok(self._url)
-    ok.__doc__ = YaBaseAPIHandler._ok.__doc__
 
     def complete(self,
                  lang: str,

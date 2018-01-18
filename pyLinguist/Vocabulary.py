@@ -37,12 +37,10 @@ class Dictionary(YaBaseAPIHandler):
 
     def getLangs(self) -> list:
         return self.get_langs()
-    getLangs.__doc__ = get_langs.__doc__
 
     @property
     def ok(self) -> bool:
         return super(Dictionary, self)._ok(self._url)
-    ok.__doc__ = YaBaseAPIHandler._ok.__doc__
 
     def lookup(self,
                text: str,
@@ -141,7 +139,6 @@ class Speller(YaBaseAPIHandler):
 
     def getLangs(self) -> set:
         return self.get_langs()
-    getLangs.__doc__ = get_langs.__doc__
 
     @property
     def encodings(self) -> set:
@@ -151,7 +148,6 @@ class Speller(YaBaseAPIHandler):
     @property
     def ok(self) -> bool:
         return super(Speller, self)._ok(None, self.check_text, "hello")
-    ok.__doc__ = YaBaseAPIHandler._ok.__doc__
 
     def _check(self,
                endpoint: str,
@@ -216,7 +212,6 @@ class Speller(YaBaseAPIHandler):
 
     def checkText(self, text: str, **params) -> list:
         return self.check_text(text, **params)
-    checkText.__doc__ = check_text.__doc__
 
     def check_texts(self,
                     text: list,
@@ -239,4 +234,3 @@ class Speller(YaBaseAPIHandler):
 
     def checkTexts(self, text: list, **params) -> list:
         return self.check_texts(text, **params)
-    checkTexts.__doc__ = check_texts.__doc__

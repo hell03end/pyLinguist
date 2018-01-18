@@ -34,7 +34,6 @@ class Translator(YaBaseAPIHandler):
 
     def getLangs(self, lang: str='en') -> dict:
         return self.get_langs(lang)
-    getLangs.__doc__ = get_langs.__doc__
 
     @property
     def directions(self) -> list:
@@ -49,7 +48,6 @@ class Translator(YaBaseAPIHandler):
     @property
     def ok(self) -> bool:
         return super(Translator, self)._ok(self._url)
-    ok.__doc__ = YaBaseAPIHandler._ok.__doc__
 
     @log()
     def detect(self,
