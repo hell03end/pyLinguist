@@ -1,4 +1,5 @@
 __pycache__/
+.vscode/
 .cache/
 .idea/
 .venv/
@@ -9,3 +10,5 @@ tmp/
 *.bak
 *.JSON
 *.log
+
+config.py
