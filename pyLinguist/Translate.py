@@ -1,8 +1,8 @@
 import logging
 import re
 
-from pyLinguist.base import YaBaseAPIHandler
-from pyLinguist.log import log
+from pyLinguist.utils.base import YaBaseAPIHandler
+from pyLinguist.utils.log import log
 
 
 class Translator(YaBaseAPIHandler):
@@ -23,17 +23,17 @@ class Translator(YaBaseAPIHandler):
         self._url = self._base_url.format(self._v)
 
     @log()
-    def get_langs(self, lang: str='en', **params) -> dict or list:
+    def get_langs(self, lang: str='en') -> dict:
         """
             Wrapper for getLangs API method.
 
             Use caching to store received info.
             https://tech.yandex.com/translate/doc/dg/reference/getLangs-docpage
         """
-        return super(Translator, self)._get_langs(self._url, ui=lang, **params)
+        return super(Translator, self)._get_langs(self._url, ui=lang)
 
-    def getLangs(self, lang: str='en', **params) -> ...:
-        return self.get_langs(lang, **params)
+    def getLangs(self, lang: str='en') -> dict:
+        return self.get_langs(lang)
     getLangs.__doc__ = get_langs.__doc__
 
     @property
@@ -42,7 +42,7 @@ class Translator(YaBaseAPIHandler):
         return self.get_langs().get('dirs', [])
 
     @property
-    def languages(self) -> list:
+    def languages(self) -> dict:
         """ Shortcut for get_langs(...)['langs'] """
         return self.get_langs().get('langs', [])
 
