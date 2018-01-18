@@ -2,8 +2,8 @@
 
 import logging
 import traceback
+from collections import Callable
 from functools import wraps
-from typing import Callable
 
 
 class Log:
