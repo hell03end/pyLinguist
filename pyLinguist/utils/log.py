@@ -1,3 +1,5 @@
+""" Logging for workflow (mainly functions) """
+
 import logging
 import traceback
 from functools import wraps
@@ -60,7 +62,7 @@ class Log:
 
 
 class _FuncLog(Log):
-    """ Context manager for logging function call """
+    """ Context manager for logging function calls """
 
     def __init__(self,
                  case_name: str,

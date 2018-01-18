@@ -1,3 +1,5 @@
+""" Base classes """
+
 import json
 import logging
 from collections import Callable, Iterable
@@ -6,15 +8,15 @@ from http.client import HTTPException
 from time import time
 from urllib import parse, request
 
-from pyLinguist.exc import YaTranslateException
-from pyLinguist.log import log
+from pyLinguist.utils.exc import YaTranslateException
+from pyLinguist.utils.log import log
 
 
 class YaBaseAPIHandler(object):
     """ Generic class for Yandex APIs """
     _endpoints = {'langs': "getLangs"}
 
-    def __init__(self, key: str, v: str=None, threshold: float or int=86400):
+    def __init__(self, key: str, v: str="1", threshold: float or int=86400):
         if not key:
             raise YaTranslateException(401)
 
@@ -31,14 +33,14 @@ class YaBaseAPIHandler(object):
         )
 
     @property
-    def v(self) -> str or None:
+    def v(self) -> str:
         """ API version """
         return self._v
 
     @classmethod
     def _make_url(cls, url: str, endpoint: str) -> str:
         """ Creates full (base url + endpoint) url for API requests """
-        return "{}{}".format(url, cls._endpoints[endpoint])
+        return "".join((url, cls._endpoints[endpoint]))
 
     @log()
     def _form_params(self, list_exceptions: Iterable=(), **params) -> dict:
@@ -77,8 +79,8 @@ class YaBaseAPIHandler(object):
         else:
             response = request.urlopen(url, data=url_params.encode(encoding))
 
+        logging.debug("Response code: %s", response.code)
         if response.code != 200:
-            logging.error("Response code: %s", response.code)
             raise YaTranslateException(response.code)
 
         return json.loads(response.read().decode(encoding))
