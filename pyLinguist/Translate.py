@@ -1,6 +1,7 @@
 import logging
 import re
 from ast import literal_eval
+from collections import Generator
 
 from pyLinguist.utils.base import YaBaseAPIHandler
 from pyLinguist.utils.log import log
@@ -76,40 +77,6 @@ class Translator(YaBaseAPIHandler):
         )
         return response['lang']
 
-    # # @TODO: 2..10Kb for GET
-    # def _translate_long_get(self, text: str) -> ...:
-    #     return NotImplemented
-
-    # # @TODO: 10K symbols for POST
-    # def _translate_long_post(self, text: str) -> ...:
-    #     return NotImplemented
-
-    # # @TODO: add semantic separation
-    # @staticmethod
-    # def _separate_text(text: str, limit: int) -> list:
-    #     size = len(text)
-    #     parts_count = int((size + limit - 1) // limit)
-    #     return [text[part:part + limit] for part in range(0, size, limit)]
-
-    # # @TODO: add list separation by contained text
-    # @staticmethod
-    # def _separate_texts(texts: list, limit: int) -> list:
-    #     separated_list = [[]]
-    #     partion_size = 0
-    #     idx = 0
-    #     for text in texts:
-    #         if len(text) <= limit - partion_size:
-    #             separated_list[idx].append(text)
-    #             continue
-    #         text_parts = Translator._separate_text(text, limit - partion_size)
-    #         separated_list[idx].append((text_parts[0]))
-    #         separated_list.append([])
-    #         idx += 1
-    #         separated_list[idx].append(("".join(text_parts[1:])))
-    #         separated_list.append([])
-    #         idx += 1
-    #     return NotImplemented
-
     @log()
     def translate(self,
                   text: str or list,
@@ -131,14 +98,6 @@ class Translator(YaBaseAPIHandler):
             options=options,
             **params
         )
-        # assume that unicode character is 2 bytes long and browser can handle
-        # long GET requests (up to approximately 9Kb)
-        # if not post and isinstance(text, str) and len(text) >= (9 * 1024) / 2:
-        #     logging.warning("Long text processing still not implemented!")
-        #     ...
-        # elif post and isinstance(text, str) and len(text) >= 10000:
-        #     logging.warning("Long text processing still not implemented!")
-        #     ...
         response = super(Translator, self).make_request(
             Translator._make_url(self._url, "translate"), post, **params
         )
@@ -149,3 +108,16 @@ class Translator(YaBaseAPIHandler):
         if isinstance(text, list) and len(response['text']) == 1:
             response['text'] = literal_eval(response['text'][0])
         return response
+
+    def translation(self,
+                    texts: list or tuple,
+                    languages: (list, tuple, str),
+                    **params) -> Generator:
+        """ Yields translations """
+        if not isinstance(texts, (list, tuple)):
+            raise ValueError("Expect list|tuple, got '{}'".format(type(texts)))
+        if isinstance(languages, str):
+            languages = [languages] * len(texts)
+
+        for text, lang in zip(texts, languages):
+            yield self.translate(text, lang, **params)
