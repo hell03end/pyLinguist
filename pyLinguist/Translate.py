@@ -1,5 +1,6 @@
 import logging
 import re
+from ast import literal_eval
 
 from pyLinguist.utils.base import YaBaseAPIHandler
 from pyLinguist.utils.log import log
@@ -109,12 +110,6 @@ class Translator(YaBaseAPIHandler):
     #         idx += 1
     #     return NotImplemented
 
-    # @FIXME: some cases of parsing are incorrect
-    @staticmethod
-    def _str2list(text: str) -> str:
-        pattern = r"\', \'" if "\\" in text else "\', \'"
-        return re.split(pattern, text.strip(r"[]").strip("\'"))
-
     @log()
     def translate(self,
                   text: str or list,
@@ -136,8 +131,8 @@ class Translator(YaBaseAPIHandler):
             options=options,
             **params
         )
-        # # assume that unicode character is 2 bytes long and browser can handle
-        # # long GET requests (up to approximately 9Kb)
+        # assume that unicode character is 2 bytes long and browser can handle
+        # long GET requests (up to approximately 9Kb)
         # if not post and isinstance(text, str) and len(text) >= (9 * 1024) / 2:
         #     logging.warning("Long text processing still not implemented!")
         #     ...
@@ -149,7 +144,8 @@ class Translator(YaBaseAPIHandler):
         )
 
         del response['code']  # this information is redundant
+        logging.debug("Remove 'code' key from response.")
+
         if isinstance(text, list) and len(response['text']) == 1:
-            logging.warning("List parsing still not implemented well!")
-            response['text'] = self._str2list(response['text'][0])
+            response['text'] = literal_eval(response['text'][0])
         return response
