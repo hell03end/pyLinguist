@@ -1,5 +1,8 @@
+from functools import lru_cache
+
 from pyLinguist.utils.base import YaBaseAPIHandler
 from pyLinguist.utils.exc import YaTranslateException
+from pyLinguist.utils.log import log
 
 
 class Predictor(YaBaseAPIHandler):
@@ -33,6 +36,8 @@ class Predictor(YaBaseAPIHandler):
     def ok(self) -> bool:
         return super(Predictor, self)._ok(self._url)
 
+    @log()
+    @lru_cache(maxsize=128)
     def complete(self,
                  lang: str,
                  q: str,

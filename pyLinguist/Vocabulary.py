@@ -1,5 +1,9 @@
+from collections import Generator
+from functools import lru_cache
+
 from pyLinguist.utils.base import YaBaseAPIHandler
 from pyLinguist.utils.exc import YaTranslateException
+from pyLinguist.utils.log import log
 
 
 class Dictionary(YaBaseAPIHandler):
@@ -42,6 +46,8 @@ class Dictionary(YaBaseAPIHandler):
     def ok(self) -> bool:
         return super(Dictionary, self)._ok(self._url)
 
+    @log()
+    @lru_cache(maxsize=32)
     def lookup(self,
                text: str,
                lang: str,
@@ -150,6 +156,7 @@ class Speller(YaBaseAPIHandler):
     def ok(self) -> bool:
         return super(Speller, self)._ok(None, self.check_text, "hello")
 
+    @log()
     def _check(self,
                endpoint: str,
                text: str or list,
@@ -235,3 +242,12 @@ class Speller(YaBaseAPIHandler):
 
     def checkTexts(self, text: list, **params) -> list:
         return self.check_texts(text, **params)
+
+    def checking_texts(self, texts: list, **params) -> Generator:
+        """ Yields checked texts """
+        for text in texts:
+            yield self.check_texts(text, **params)
+
+    def checkingTexts(self, texts: list, **params) -> Generator:
+        for text in texts:
+            yield self.check_texts(text, **params)
