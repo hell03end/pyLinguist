@@ -88,7 +88,8 @@ class Dictionary(YaBaseAPIHandler):
             Shortcut for lookup(...)['def']
 
             Return array of dictionary entries.
-            A transcription of the search word may be provided in the 'ts' attribute.
+            A transcription of the search word may be provided
+                in the 'ts' attribute.
         """
         return self.lookup(text, lang, **params).get("def", [])
 
